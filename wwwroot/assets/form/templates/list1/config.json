@@ -1,0 +1,7 @@
+{
+    "publisher": "sscms",
+    "main": "index.html",
+    "icon": "images/icon.png",
+    "type": "list",
+    "description": "表单显示模板1"
+}

@@ -1,0 +1,156 @@
+{
+  "name": "form",
+  "displayName": "自定义表单插件",
+  "description": "SSCMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "publisher": "sscms",
+  "engines": {
+    "sscms": "^7.0.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "内容"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/siteserver/sscms.form"
+  },
+  "icon": "/assets/form/logo.svg",
+  "output": "bin/Release/netcoreapp3.1",
+  "main": "SSCMS.Form.dll",
+  "extensions": {
+    "permissions": {
+      "form_forms": {
+        "text": "表单管理",
+        "type": ["web", "wx"]
+      },
+      "form_templates": {
+        "text": "表单模板",
+        "type": ["web", "wx"]
+      },
+      "form_channels_config": {
+        "text": "内容表单设置",
+        "type": ["web", "wx"]
+      }
+    },
+    "menus": {
+      "form_site_all": {
+        "text": "表单",
+        "iconClass": "ion-android-list",
+        "type": ["web", "wx"],
+        "permissions": [
+          "form_forms",
+          "form_templates",
+          "form_channels_config"
+        ],
+        "menus": {
+          "form_forms": {
+            "text": "表单管理",
+            "link": "/ss-admin/form/forms/",
+            "permissions": ["form_forms"],
+            "order": 1
+          },
+          "form_templates": {
+            "text": "表单模板",
+            "permissions": ["form_templates"],
+            "order": 2,
+            "menus": {
+              "form_templates_submit": {
+                "text": "表单提交模板",
+                "link": "/ss-admin/form/templates/?type=submit",
+                "order": 1
+              },
+              "form_templates_list": {
+                "text": "数据显示模板",
+                "link": "/ss-admin/form/templates/?type=list",
+                "order": 2
+              }
+            }
+          },
+          "form_channels_config": {
+            "text": "内容表单设置",
+            "link": "/ss-admin/plugins/config/?pluginId=sscms.form",
+            "permissions": ["form_channels_config"],
+            "order": 3
+          }
+        }
+      },
+      "form_contents_all": {
+        "text": "表单管理",
+        "type": ["content"],
+        "link": "/ss-admin/form/data/",
+        "permissions": [
+          "form_forms",
+          "form_templates"
+        ],
+        "order": 1
+      }
+    },
+    "tables": {
+      "sscms_form": {
+        "columns": [
+          {
+            "attributeName": "SiteId",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "ChannelId",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "ContentId",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "Title",
+            "dataType": "VarChar"
+          },
+          {
+            "attributeName": "Description",
+            "dataType": "VarChar",
+            "dataLength": 2000
+          },
+          {
+            "attributeName": "Taxis",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "IsReply",
+            "dataType": "Boolean"
+          },
+          {
+            "attributeName": "RepliedCount",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "TotalCount",
+            "dataType": "Integer"
+          }
+        ]
+      },
+      "sscms_form_data": {
+        "columns": [
+          {
+            "attributeName": "FormId",
+            "dataType": "Integer"
+          },
+          {
+            "attributeName": "IsReplied",
+            "dataType": "Boolean"
+          },
+          {
+            "attributeName": "ReplyDate",
+            "dataType": "DateTime"
+          },
+          {
+            "attributeName": "ReplyContent",
+            "dataType": "Text"
+          }
+        ]
+      }
+    }
+  }
+}
