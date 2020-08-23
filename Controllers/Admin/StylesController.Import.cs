@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SSCMS.Configuration;
 using SSCMS.Dto;
 using SSCMS.Extensions;
 using SSCMS.Form.Core;
@@ -14,7 +15,7 @@ namespace SSCMS.Form.Controllers.Admin
         public async Task<ActionResult<BoolResult>> Import([FromQuery] FormRequest request, [FromForm] IFormFile file)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId,
-                AuthTypes.SitePermissions.SettingsStyleSite))
+                Types.SitePermissions.SettingsStyleSite))
             {
                 return Unauthorized();
             }

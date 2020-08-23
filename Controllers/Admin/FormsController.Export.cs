@@ -23,7 +23,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             await _formManager.ExportFormAsync(formInfo.SiteId, directoryPath, formInfo.Id);
 
-            ZipUtils.CreateZip(_pathManager.GetTemporaryFilesPath(fileName), directoryPath);
+            _pathManager.CreateZip(_pathManager.GetTemporaryFilesPath(fileName), directoryPath);
 
             var url = _pathManager.GetTemporaryFilesUrl($"{fileName}");
 

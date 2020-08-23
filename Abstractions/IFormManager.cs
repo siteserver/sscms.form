@@ -15,6 +15,9 @@ namespace SSCMS.Form.Abstractions
 
         Task DeleteAsync(int siteId, int formId);
 
+        //Task TranslateAsync(int siteId, int channelId, int contentId, int targetSiteId, int targetChannelId,
+        //    int targetContentId);
+
         Task ImportFormAsync(int siteId, string directoryPath, bool overwrite);
 
         Task ExportFormAsync(int siteId, string directoryPath, int formId);

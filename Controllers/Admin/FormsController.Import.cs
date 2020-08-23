@@ -37,7 +37,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             var directoryPath = _pathManager.GetTemporaryFilesPath("form");
             DirectoryUtils.DeleteDirectoryIfExists(directoryPath);
-            ZipUtils.ExtractZip(filePath, directoryPath);
+            _pathManager.ExtractZip(filePath, directoryPath);
 
             await _formManager.ImportFormAsync(request.SiteId, directoryPath, false);
 

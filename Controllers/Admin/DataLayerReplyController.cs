@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SSCMS.Configuration;
 using SSCMS.Form.Abstractions;
 using SSCMS.Form.Core;
 using SSCMS.Services;
@@ -8,7 +9,7 @@ using SSCMS.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
 {
-    [Authorize(Roles = AuthTypes.Roles.Administrator)]
+    [Authorize(Roles = Types.Roles.Administrator)]
     [Route(Constants.ApiAdminPrefix)]
     public partial class DataLayerReplyController : ControllerBase
     {

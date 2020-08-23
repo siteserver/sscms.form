@@ -14,6 +14,7 @@ using SSCMS.Form.Utils.Atom.Atom.AdditionalElements;
 using SSCMS.Form.Utils.Atom.Atom.AdditionalElements.DublinCore;
 using SSCMS.Form.Utils.Atom.Atom.Core;
 using SSCMS.Models;
+using SSCMS.Plugins;
 using SSCMS.Repositories;
 using SSCMS.Services;
 using SSCMS.Utils;
@@ -27,6 +28,7 @@ namespace SSCMS.Form.Core
 
         private readonly ICacheManager<string> _cacheManager;
         private readonly IPathManager _pathManager;
+        private readonly IPluginManager _pluginManager;
         private readonly IPlugin _plugin;
         private readonly IFormRepository _formRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
@@ -36,6 +38,7 @@ namespace SSCMS.Form.Core
         {
             _cacheManager = cacheManager;
             _pathManager = pathManager;
+            _pluginManager = pluginManager;
             _plugin = pluginManager.Current;
             _formRepository = formRepository;
             _tableStyleRepository = tableStyleRepository;
@@ -165,6 +168,15 @@ namespace SSCMS.Form.Core
             await _logRepository.DeleteByFormIdAsync(formId);
             await _formRepository.DeleteAsync(siteId, formId);
         }
+
+        //public async Task TranslateAsync(int siteId, int channelId, int contentId, int targetSiteId, int targetChannelId,
+        //    int targetContentId)
+        //{
+        //    if (_pluginManager.IsEnabled(_plugin.PluginId, siteId, channelId))
+        //    {
+
+        //    }
+        //}
 
         private const string VersionFileName = "version.txt";
 

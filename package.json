@@ -2,7 +2,7 @@
   "name": "form",
   "displayName": "自定义表单插件",
   "description": "SSCMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "GPL-3.0",
   "publisher": "sscms",
   "engines": {
@@ -19,7 +19,7 @@
     "url": "https://github.com/siteserver/sscms.form"
   },
   "icon": "/assets/form/logo.svg",
-  "output": "bin/Release/netcoreapp3.1",
+  "output": "",
   "main": "SSCMS.Form.dll",
   "extensions": {
     "permissions": {
