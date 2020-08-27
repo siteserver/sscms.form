@@ -14,7 +14,6 @@ using SSCMS.Form.Utils.Atom.Atom.AdditionalElements;
 using SSCMS.Form.Utils.Atom.Atom.AdditionalElements.DublinCore;
 using SSCMS.Form.Utils.Atom.Atom.Core;
 using SSCMS.Models;
-using SSCMS.Plugins;
 using SSCMS.Repositories;
 using SSCMS.Services;
 using SSCMS.Utils;
@@ -23,13 +22,13 @@ namespace SSCMS.Form.Core
 {
     public class FormManager : IFormManager
     {
+        public const string PluginId = "sscms.form";
         public const string PermissionsForms = "form_forms";
         public const string PermissionsTemplates = "form_templates";
 
         private readonly ICacheManager<string> _cacheManager;
         private readonly IPathManager _pathManager;
         private readonly IPluginManager _pluginManager;
-        private readonly IPlugin _plugin;
         private readonly IFormRepository _formRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
         private readonly IDataRepository _logRepository;
@@ -39,7 +38,6 @@ namespace SSCMS.Form.Core
             _cacheManager = cacheManager;
             _pathManager = pathManager;
             _pluginManager = pluginManager;
-            _plugin = pluginManager.Current;
             _formRepository = formRepository;
             _tableStyleRepository = tableStyleRepository;
             _logRepository = logRepository;
@@ -384,7 +382,9 @@ namespace SSCMS.Form.Core
             }
             feed.Save(filePath);
 
-            await FileUtils.WriteTextAsync(PathUtils.Combine(directoryPath, VersionFileName), _plugin.Version);
+            var plugin = _pluginManager.GetPlugin(PluginId);
+
+            await FileUtils.WriteTextAsync(PathUtils.Combine(directoryPath, VersionFileName), plugin.Version);
         }
 
         //private AtomFeed ExportFieldInfo(FieldInfo style)
@@ -586,7 +586,8 @@ namespace SSCMS.Form.Core
 
         private string GetMailTemplatesDirectoryPath()
         {
-            return PathUtils.Combine(_plugin.WebRootPath, "assets/form/mail");
+            var plugin = _pluginManager.GetPlugin(PluginId);
+            return PathUtils.Combine(plugin.WebRootPath, "assets/form/mail");
         }
 
         public async Task<string> GetMailTemplateHtmlAsync()
@@ -751,7 +752,8 @@ namespace SSCMS.Form.Core
 
         private string GetTemplatesDirectoryPath()
         {
-            return PathUtils.Combine(_plugin.WebRootPath, "assets/form/templates");
+            var plugin = _pluginManager.GetPlugin(PluginId);
+            return PathUtils.Combine(plugin.WebRootPath, "assets/form/templates");
         }
 
         public List<TemplateInfo> GetTemplateInfoList(string type)
@@ -795,7 +797,8 @@ namespace SSCMS.Form.Core
 
         public void Clone(string nameToClone, TemplateInfo templateInfo, string templateHtml = null)
         {
-            var directoryPath = PathUtils.Combine(_plugin.ContentRootPath, "assets/form/templates");
+            var plugin = _pluginManager.GetPlugin(PluginId);
+            var directoryPath = PathUtils.Combine(plugin.ContentRootPath, "assets/form/templates");
 
             DirectoryUtils.Copy(PathUtils.Combine(directoryPath, nameToClone), PathUtils.Combine(directoryPath, templateInfo.Name), true);
 
@@ -811,7 +814,8 @@ namespace SSCMS.Form.Core
 
         public void Edit(TemplateInfo templateInfo)
         {
-            var directoryPath = PathUtils.Combine(_plugin.ContentRootPath, "assets/form/templates");
+            var plugin = _pluginManager.GetPlugin(PluginId);
+            var directoryPath = PathUtils.Combine(plugin.ContentRootPath, "assets/form/templates");
 
             var configJson = TranslateUtils.JsonSerialize(templateInfo);
             var configPath = PathUtils.Combine(directoryPath, templateInfo.Name, "config.json");
