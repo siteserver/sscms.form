@@ -4,6 +4,7 @@ var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
   formId: utils.getQueryInt('formId'),
   type: utils.getQueryString('type'),
+  formInfoList: null,
   templateInfoList: null,
   name: null,
   templateHtml: null,
@@ -30,6 +31,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
+      $this.formInfoList = res.formInfoList;
       $this.templateInfoList = res.templateInfoList;
     }).catch(function (error) {
       utils.error(error);
@@ -39,7 +41,11 @@ var methods = {
   },
 
   btnEditClick: function (name) {
-    var url = 'templatesLayerEdit.html?siteId=' + this.siteId + '&type=' + this.type + '&name=' + name + '&apiUrl=' + encodeURIComponent(this.apiUrl);
+    var url = utils.getRootUrl('form/templatesLayerEdit', {
+      siteId: this.siteId,
+      type: this.type,
+      name: name
+    });
     utils.openLayer({
       title: '模板设置',
       url: url
@@ -53,14 +59,6 @@ var methods = {
       name: templateInfo.name
     });
     utils.addTab('代码编辑', url);
-  },
-
-  btnPreviewClick: function (name) {
-    var $this = this;
-    utils.openLayer({
-      title: '预览模板',
-      url: 'templatesLayerPreview.html?siteId=' + $this.siteId + '&type=' + this.type + '&name=' + name + '&apiUrl=' + encodeURIComponent($this.apiUrl)
-    });
   },
 
   btnDeleteClick: function (template) {
@@ -109,8 +107,20 @@ var methods = {
 
   btnNavClick: function(type) {
     utils.loading(true);
-    var url = 'templates.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&formId=' + this.formId + '&type=' + type;
+    var url = utils.getRootUrl('form/templates', {
+      siteId: this.siteId,
+      formId: this.formId,
+      type: type
+    });
     location.href = url;
+  },
+
+  btnPreviewClick: function(ids) {
+    var formId = utils.toInt(ids.split('_')[0]);
+    var templateName = ids.split('_')[1];
+
+    var url = '/assets/form/templates/' + templateName + '/index.html?siteId=' + this.siteId + '&formId=' + formId + '&apiUrl=' + encodeURIComponent('/api');
+    window.open(url);
   }
 };
 

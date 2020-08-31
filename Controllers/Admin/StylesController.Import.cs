@@ -11,6 +11,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class StylesController
     {
+        [RequestSizeLimit(long.MaxValue)]
         [HttpPost, Route(RouteImport)]
         public async Task<ActionResult<BoolResult>> Import([FromQuery] FormRequest request, [FromForm] IFormFile file)
         {

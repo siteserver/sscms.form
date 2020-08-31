@@ -10,7 +10,7 @@ namespace SSCMS.Form.Controllers
 {
     public partial class FormController
     {
-        [HttpPost, Route("{siteId:int}/{formId:int}/actions/get")]
+        [HttpPost, Route("{siteId:int}/{formId:int}/actions/getForm")]
         public async Task<ActionResult<GetFormResult>> GetForm([FromRoute] int siteId, [FromRoute] int formId)
         {
             var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);

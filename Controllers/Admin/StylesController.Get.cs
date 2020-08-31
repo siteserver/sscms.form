@@ -23,11 +23,6 @@ namespace SSCMS.Form.Controllers.Admin
             var relatedIdentities = _formManager.GetRelatedIdentities(request);
             var styles = await _formManager.GetTableStylesAsync(tableName, relatedIdentities);
 
-            foreach (var style in styles)
-            {
-                style.Rules = TranslateUtils.JsonDeserialize<List<InputStyleRule>>(style.RuleValues);
-            }
-
             var inputTypes = ListUtils.GetSelects<InputType>();
 
             return new GetResult

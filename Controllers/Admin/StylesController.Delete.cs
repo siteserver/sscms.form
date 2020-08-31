@@ -24,10 +24,6 @@ namespace SSCMS.Form.Controllers.Admin
             await _formManager.DeleteTableStyleAsync(tableName, relatedIdentities, request.AttributeName);
 
             var styles = await _formManager.GetTableStylesAsync(tableName, relatedIdentities);
-            foreach (var style in styles)
-            {
-                style.Rules = TranslateUtils.JsonDeserialize<List<InputStyleRule>>(style.RuleValues);
-            }
 
             return new DeleteResult
             {

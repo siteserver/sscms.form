@@ -18,11 +18,13 @@ namespace SSCMS.Form.Controllers.Admin
 
         private readonly IAuthManager _authManager;
         private readonly IFormManager _formManager;
+        private readonly IFormRepository _formRepository;
 
-        public TemplatesController(IAuthManager authManager, IFormManager formManager)
+        public TemplatesController(IAuthManager authManager, IFormManager formManager, IFormRepository formRepository)
         {
             _authManager = authManager;
             _formManager = formManager;
+            _formRepository = formRepository;
         }
 
         public class ListRequest : SiteRequest
@@ -32,6 +34,7 @@ namespace SSCMS.Form.Controllers.Admin
 
         public class ListResult
         {
+            public List<FormInfo> FormInfoList { get; set; }
             public List<TemplateInfo> TemplateInfoList { get; set; }
         }
 

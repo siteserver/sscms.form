@@ -1,5 +1,16 @@
 @page
 @{ Layout = "_Layout"; }
+@section Styles{
+  <style>
+    .el-dropdown-link {
+      cursor: pointer;
+      color: #00B19D;
+    }
+    .el-icon-arrow-down {
+      font-size: 12px;
+    }
+  </style>
+}
 
 <el-alert type="info">
   表单标签：<strong>&lt;stl:form name="表单名称" type="模板文件夹"&gt;&lt;/stl:form&gt;</strong>，如果希望自定义模板样式，可以点击代码编辑按钮然后修改模板代码。
@@ -32,7 +43,21 @@
           
         <el-link type="primary" :underline="false" v-if="!templateInfo.publisher" v-on:click="btnEditClick(templateInfo.name)">设 置</el-link>
         <el-link type="primary" :underline="false" v-on:click="btnHtmlClick(templateInfo)">代码编辑</el-link>
-        <el-link type="primary" :underline="false" v-on:click="btnPreviewClick(templateInfo.name)">预 览</el-link>
+
+        <el-dropdown type="primary" v-on:command="btnPreviewClick">
+          <span class="el-dropdown-link">
+            预 览<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="formInfo in formInfoList"
+              :key="formInfo.id"
+              :command="formInfo.id + '_' + templateInfo.name">
+              {{ formInfo.title }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
         <el-link type="primary" :underline="false"  v-if="!templateInfo.publisher" v-on:click="btnDeleteClick(templateInfo)">删 除</el-link>
 
       </div>
