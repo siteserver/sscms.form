@@ -2,6 +2,9 @@
 @{ Layout = "_Layout"; }
 @section Styles{
   <style>
+    .el-dropdown {
+      top: 2px;
+    }
     .el-dropdown-link {
       cursor: pointer;
       color: #00B19D;
@@ -44,7 +47,7 @@
         <el-link type="primary" :underline="false" v-if="!templateInfo.publisher" v-on:click="btnEditClick(templateInfo.name)">设 置</el-link>
         <el-link type="primary" :underline="false" v-on:click="btnHtmlClick(templateInfo)">代码编辑</el-link>
 
-        <el-dropdown type="primary" v-on:command="btnPreviewClick">
+        <el-dropdown v-if="formInfoList && formInfoList.length > 0" type="primary" v-on:command="btnPreviewClick">
           <span class="el-dropdown-link">
             预 览<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
