@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSCMS.Dto;
 using SSCMS.Form.Core;
+using SSCMS.Form.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
 {
@@ -16,10 +17,12 @@ namespace SSCMS.Form.Controllers.Admin
                 return Unauthorized();
             }
 
-            var tableName = _formManager.GetTableName(request);
-            var relatedIdentities = _formManager.GetRelatedIdentities(request);
+            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            if (formInfo == null) return NotFound();
 
-            var fileName = await _pathManager.ExportStylesAsync(request.SiteId, tableName, relatedIdentities);
+            var relatedIdentities = _formManager.GetRelatedIdentities(formInfo.Id);
+
+            var fileName = await _pathManager.ExportStylesAsync(request.SiteId, FormUtils.TableNameData, relatedIdentities);
 
             var filePath = _pathManager.GetTemporaryFilesPath(fileName);
             var downloadUrl = _pathManager.GetRootUrlByPath(filePath);

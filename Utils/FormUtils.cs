@@ -5,7 +5,6 @@ namespace SSCMS.Form.Utils
     public static class FormUtils
     {
         public const string TableNameData = "sscms_form_data";
-        public const string TableNameContent = "siteserver_content";
 
         public static DateTime ToDateTime(string dateTimeStr)
         {

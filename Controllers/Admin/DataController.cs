@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
 using SSCMS.Form.Abstractions;
 using SSCMS.Form.Core;
+using SSCMS.Form.Models;
 using SSCMS.Models;
 using SSCMS.Services;
-using SSCMS.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
 {
@@ -40,7 +40,7 @@ namespace SSCMS.Form.Controllers.Admin
 
         public class GetResult
         {
-            public List<Dictionary<string, object>> Items { get; set; }
+            public List<DataInfo> Items { get; set; }
             public int Total { get; set; }
             public int PageSize { get; set; }
             public List<TableStyle> Styles { get; set; }
@@ -58,10 +58,9 @@ namespace SSCMS.Form.Controllers.Admin
 
         public class DeleteResult
         {
-            public List<IDictionary<string, object>> Logs { get; set; }
-            public int Count { get; set; }
-            public int Pages { get; set; }
-            public int Page { get; set; }
+            public List<DataInfo> Items { get; set; }
+            public int Total { get; set; }
+            public int PageSize { get; set; }
         }
 
         public class ColumnsRequest : FormRequest

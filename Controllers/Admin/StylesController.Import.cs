@@ -5,6 +5,7 @@ using SSCMS.Configuration;
 using SSCMS.Dto;
 using SSCMS.Extensions;
 using SSCMS.Form.Core;
+using SSCMS.Form.Utils;
 using SSCMS.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
@@ -20,6 +21,9 @@ namespace SSCMS.Form.Controllers.Admin
             {
                 return Unauthorized();
             }
+
+            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            if (formInfo == null) return NotFound();
 
             if (file == null)
             {
@@ -39,10 +43,9 @@ namespace SSCMS.Form.Controllers.Admin
 
             //var directoryPath = await ImportObject.ImportTableStyleByZipFileAsync(_pathManager, _databaseManager, _siteRepository.TableName, FormUtils.GetRelatedIdentities(request.SiteId), filePath);
 
-            var tableName = _formManager.GetTableName(request);
-            var relatedIdentities = _formManager.GetRelatedIdentities(request);
+            var relatedIdentities = _formManager.GetRelatedIdentities(formInfo.Id);
 
-            var directoryPath = await _pathManager.ImportStylesAsync(tableName, relatedIdentities, filePath);
+            var directoryPath = await _pathManager.ImportStylesAsync(FormUtils.TableNameData, relatedIdentities, filePath);
 
             FileUtils.DeleteFileIfExists(filePath);
             DirectoryUtils.DeleteDirectoryIfExists(directoryPath);

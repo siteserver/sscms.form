@@ -1,14 +1,12 @@
 ﻿var $url = '/form/templatesLayerEdit';
 
-var data = {
+var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
   type: utils.getQueryString('type'),
   name: utils.getQueryString('name'),
   isSystem: utils.getQueryBoolean('isSystem'),
-  pageLoad: false,
-  pageAlert: null,
   templateInfo: null
-};
+});
 
 var methods = {
   apiGet: function () {
@@ -21,14 +19,7 @@ var methods = {
       }
     }).then(function (response) {
       var res = response.data;
-      $this.templateInfo = res.value;
-
-      if ($this.isSystem) {
-        $this.pageAlert = {
-          type: 'warning',
-          html: '提示：' + this.name + ' 为系统模板，编辑此模板需要克隆至指定文件夹'
-        };
-      }
+      $this.templateInfo = res.templateInfo;
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -44,11 +35,12 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.post('', {
-      originalName: $this.name,
-      name: $this.templateInfo.name,
-      description: $this.templateInfo.description,
-      templateHtml: $this.getTemplateHtml()
+    $api.post($url, {
+      type: this.type,
+      originalName: this.name,
+      name: this.templateInfo.name,
+      description: this.templateInfo.description,
+      templateHtml: this.getTemplateHtml()
     }).then(function (response) {
       utils.success('模板克隆成功！');
       parent.location.href = $this.getTemplatesUrl();
@@ -64,9 +56,10 @@ var methods = {
 
     utils.loading(this, true);
     $api.put($url, {
-      originalName: $this.name,
-      name: $this.templateInfo.name,
-      description: $this.templateInfo.description
+      type: this.type,
+      originalName: this.name,
+      name: this.templateInfo.name,
+      description: this.templateInfo.description
     }).then(function (response) {
 
       utils.success('模板编辑成功！');
@@ -80,10 +73,10 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
-    this.$validator.validate().then(function (result) {
-      if (result) {
-        
-        if ($this.isSystem === 'true') {
+    
+    this.$refs.form.validate(function(valid) {
+      if (valid) {
+        if ($this.isSystem) {
           $this.apiClone();
         } else {
           $this.apiEdit();
@@ -93,7 +86,15 @@ var methods = {
   },
 
   getTemplatesUrl: function() {
-    return 'templates.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&formId=' + this.formId + '&type=' + this.type;
+    return utils.getRootUrl('form/templates', {
+      siteId: this.siteId,
+      formId: this.formId,
+      type: this.type
+    });
+  },
+
+  btnCancelClick: function() {
+    window.parent.layer.closeAll()
   }
 };
 

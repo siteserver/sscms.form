@@ -62,7 +62,7 @@ namespace SSCMS.Form.Core
             {
                 var elementId = $"iframe_{StringUtils.GetShortGuid(false)}";
                 var libUrl = _pathManager.GetRootUrl("assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
-                var pageUrl = _pathManager.GetRootUrl($"templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
+                var pageUrl = _pathManager.GetRootUrl($"assets/form/templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
 
                 return $@"
 <iframe id=""{elementId}"" frameborder=""0"" scrolling=""no"" src=""{pageUrl}"" style=""width: 1px;min-width: 100%;""></iframe>
@@ -73,11 +73,9 @@ namespace SSCMS.Form.Core
 
             return $@"
 <script>
-var $config = {{
-    apiUrl: '{apiUrl}',
-    siteId: {context.SiteId},
-    formId: {formInfo.Id}
-}};
+var $formConfigApiUrl = '{apiUrl}';
+var $formConfigSiteId = {context.SiteId};
+var $formConfigFormId = {formInfo.Id};
 </script>
 {context.StlInnerHtml}
 ";

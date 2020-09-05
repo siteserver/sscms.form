@@ -1,129 +1,96 @@
-var $getParameter = function (name) {
-  var result = location.search.match(
-    new RegExp('[?&]' + name + '=([^&]+)', 'i')
-  );
-  if (!result || result.length < 1) {
-    return window.$config ? $config[name] : '';
-  }
-  return decodeURIComponent(result[1]);
-};
+$apiUrl = utils.getQueryString('apiUrl') || $formConfigApiUrl;
+$rootUrl = "/";
+$token = localStorage.getItem(USER_ACCESS_TOKEN_NAME);
 
 var $api = axios.create({
-  withCredentials: true
+  baseURL: $apiUrl,
+  headers: {
+    Authorization: "Bearer " + $token,
+  },
 });
 
-Vue.component("multiselect", window.VueMultiselect.default);
+var $url = '/form';
+
+var data = utils.init({
+  siteId: utils.getQueryInt('siteId') || $formConfigSiteId,
+  formId: utils.getQueryInt('formId') || $formConfigFormId,
+  word: utils.getQueryString('word'),
+  pageType: 'loading',
+  styleList: null,
+  allAttributeNames: [],
+  listAttributeNames: [],
+  isReply: false,
+  total: null,
+  pageSize: null,
+  page: 1,
+  items: [],
+  columns: null,
+});
+
+var methods = {
+  apiGet: function (page) {
+    var $this = this;
+
+    this.pageType = 'loading';
+    $api.get($url + '/' + this.siteId + '/' + this.formId, {
+      page: page,
+      word: this.word
+    }).then(function (response) {
+      var res = response.data;
+
+      $this.styleList = res.styleList;
+      $this.allAttributeNames = res.allAttributeNames;
+      $this.listAttributeNames = res.listAttributeNames;
+      $this.isReply = res.isReply;
+      $this.items = res.items;
+      $this.total = res.total;
+      $this.pageSize = res.pageSize;
+      $this.columns = res.columns;
+
+      $this.pageType = 'list';
+      document.documentElement.scrollTop = document.body.scrollTop = 0;
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+
+  getAttributeText: function (attributeName) {
+    var column = this.columns.find(function (x) {
+      return x.attributeName === attributeName;
+    })
+    return column.displayName;
+  },
+
+  getAttributeType: function(attributeName) {
+    var style = _.find(this.styleList, function(o) {return o.title === attributeName});
+    if (style && style.fieldType) return style.fieldType;
+    return 'Text';
+  },
+
+  getAttributeValue: function (item, attributeName) {
+    return item[_.lowerFirst(attributeName)];
+  },
+
+  largeImage: function(item, attributeName) {
+    var imageUrl = this.getAttributeValue(item, attributeName);
+    Swal.fire({
+      imageUrl: imageUrl,
+      showConfirmButton: false,
+    })
+  },
+
+  handleCurrentChange: function(val) {
+    this.apiGet(val);
+  },
+};
 
 var $vue = new Vue({
-  el: "#form_list",
-  data: {
-    apiUrl: $getParameter('apiUrl'),
-    siteId: $getParameter('siteId'),
-    formId: $getParameter('formId'),
-    word: $getParameter('word'),
-    pageType: 'loading',
-    styleList: null,
-    allAttributeNames: [],
-    listAttributeNames: [],
-    isReply: false,
-    page: 1,
-    items: [],
-    count: null,
-    pages: null,
-    pageOptions: null,
-  },
-  methods: {
-    getAttributeText: function (attributeName) {
-      if (attributeName === 'AddDate') {
-        return '添加时间';
-      } else if (attributeName === 'IsReplied') {
-        return '是否回复';
-      } else if (attributeName === 'ReplyDate') {
-        return '回复时间';
-      } else if (attributeName === 'ReplyContent') {
-        return '回复内容';
-      }
-
-      return attributeName;
-    },
-
-    getAttributeType: function(attributeName) {
-      var style = _.find(this.styleList, function(o) {return o.title === attributeName});
-      if (style && style.fieldType) return style.fieldType;
-      return 'Text';
-    },
-
-    getAttributeValue: function (item, attributeName) {
-      if (attributeName === 'IsReplied') {
-        return item.isReplied ? '<strong class="text-primary">已回复</strong>' : '<strong class="text-danger">未回复</strong>';
-      } else if (attributeName === 'ReplyDate') {
-        return item.isReplied ? item.replyDate : '';
-      } else if (attributeName === 'ReplyContent') {
-        return item.isReplied ? item.replyContent : '';
-      }
-
-      return item[_.camelCase(attributeName)];
-    },
-
-    largeImage: function(item, attributeName) {
-      var imageUrl = this.getAttributeValue(item, attributeName);
-      Swal.fire({
-        imageUrl: imageUrl,
-        showConfirmButton: false,
-      })
-    },
-
-    loadFirstPage: function () {
-      if (this.page === 1) return;
-      this.loadPage(1);
-    },
-
-    loadPrevPage: function () {
-      if (this.page - 1 <= 0) return;
-      this.loadPage(this.page - 1);
-    },
-
-    loadNextPage: function () {
-      if (this.page + 1 > this.pages) return;
-      this.loadPage(this.page + 1);
-    },
-
-    loadLastPage: function () {
-      if (this.page + 1 > this.pages) return;
-      this.loadPage(this.pages);
-    },
-
-    onPageSelect: function (option) {
-      this.loadPage(option);
-    },
-
-    loadPage: function (page) {
-      var $this = this;
-
-      this.pageType = 'loading';
-      $api.get(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, {
-        page: page,
-        word: this.word
-      }).then(function (res) {
-        $this.styleList = res.data.styleList;
-        $this.allAttributeNames = res.data.allAttributeNames;
-        $this.listAttributeNames = res.data.listAttributeNames;
-        $this.isReply = res.data.isReply;
-        $this.items = res.data.value;
-        $this.count = res.data.count;
-        $this.pages = res.data.pages;
-        $this.page = res.data.page;
-        $this.pageOptions = [];
-        for (var i = 1; i <= $this.pages; i++) {
-          $this.pageOptions.push(i);
-        }
-
-        $this.pageType = 'list';
-        document.documentElement.scrollTop = document.body.scrollTop = 0;
-      });
-    }
-  },
+  el: "#main",
+  data: data,
+  methods: methods,
   created: function () {
-    this.loadPage(1);
+    this.apiGet(1);
   }
 });

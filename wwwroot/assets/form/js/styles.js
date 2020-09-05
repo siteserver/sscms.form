@@ -1,5 +1,6 @@
 ﻿var $url = '/form/styles';
 var $urlImport = '/form/styles/actions/import';
+var $urlExport = '/form/styles/actions/export';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -183,7 +184,8 @@ var methods = {
   uploadSuccess: function(res, file) {
     this.uploadList = [];
     this.uploadPanel = false;
-    this.apiList('字段导入成功！');
+    utils.success('字段导入成功！');
+    this.apiGet();
   },
 
   uploadError: function(err) {
@@ -197,8 +199,11 @@ var methods = {
     var $this = this;
     
     utils.loading(this, true);
-    $api.post($url + '/actions/export', {
-      siteId: this.siteId
+    $api.post($urlExport, {
+      siteId: this.siteId,
+      channelId: this.channelId,
+      contentId: this.contentId,
+      formId: this.formId
     }).then(function (response) {
       var res = response.data;
 

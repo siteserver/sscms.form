@@ -69,7 +69,7 @@ var methods = {
       callback: function () {
         utils.loading(true);
         $api.delete($url, {
-          params: {
+          data: {
             siteId: $this.siteId,
             type: $this.type,
             name: template.name

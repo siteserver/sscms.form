@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SSCMS.Form.Abstractions;
+﻿using SSCMS.Form.Abstractions;
 using SSCMS.Plugins;
 
 namespace SSCMS.Form.Core

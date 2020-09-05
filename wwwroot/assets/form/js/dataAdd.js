@@ -49,26 +49,7 @@ var methods = {
       var res = response.data;
 
       $this.styles = res.styles;
-      $this.form = _.assign({}, res.value);
-
-      setTimeout(function () {
-        for (var i = 0; i < $this.styles.length; i++) {
-          var style = $this.styles[i];
-          if (style.inputType === 'TextEditor') {
-            var editor = UE.getEditor(style.attributeName, {
-              allowDivTransToP: false,
-              maximumWords: 99999999
-            });
-            editor.attributeName = style.attributeName;
-            editor.ready(function () {
-              editor.addListener("contentChange", function () {
-                $this.form[this.attributeName] = this.getContent();
-              });
-            });
-          }
-        }
-      }, 100);
-      
+      $this.form = utils.getForm(res.styles, res.dataInfo);
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -80,13 +61,7 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.post($url, _.assign({
-      siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
-      formId: this.formId,
-      dataId: this.dataId
-    }, this.form)).then(function (response) {
+    $api.post($url + '?siteId=' + this.siteId, this.form).then(function (response) {
       var res = response.data;
 
       utils.success('数据保存成功！');

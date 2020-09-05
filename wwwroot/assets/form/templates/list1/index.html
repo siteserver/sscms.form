@@ -6,22 +6,60 @@
   <title>表单</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <script type="text/javascript" src="../../assets/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
-  <link href="../../assets/css/font-awesome-4.7.0.min.css" rel="stylesheet" type="text/css" />
-  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link href="../../assets/lib/vue-multiselect-2.1.0/style.min.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="/assets/form/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
+  <link href="/sitefiles/assets/lib/elementui/themechalk/index.css" rel="stylesheet" type="text/css" />
+  <link href="/sitefiles/assets/css/element-ui.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body class="p-3">
-  <div id="form_list">
+<body>
+  <div id="main">
     <template v-if="pageType == 'loading'">
-      <div class="text-center" style="margin-top: 100px">
-        <img class="mt-3" src="../../assets/images/loading.gif" />
-        <p class="lead mt-3 text-nowrap">载入中，请稍后...</p>
-      </div>
+      <el-row style="margin-top: 100px; text-align: center">
+        <img src="/assets/form/images/loading.gif" />
+        <p>载入中，请稍后...</p>
+      </el-row>
     </template>
     <template v-else>
-      <div class="card-box">
+
+      <el-table :data="items" stripe style="width: 100%">
+        <el-table-column
+          v-for="attributeName in allAttributeNames" 
+          :key="attributeName" 
+          v-if="listAttributeNames.indexOf(attributeName) !== -1"
+          :label="getAttributeText(attributeName)">
+          <template slot-scope="scope">
+      
+            <el-image
+              v-if="getAttributeType(attributeName) === 'Image'"
+              :src="getAttributeValue(scope.row, attributeName)"
+              style="max-height: 100px; max-width: 100px; cursor: pointer;"
+              v-on:click="largeImage(scope.row, attributeName)">
+            </el-image>
+            <div v-else>
+                {{ getAttributeValue(scope.row, attributeName) }}
+            </div>
+      
+          </template>
+        </el-table-column>
+        <el-table-column v-if="isReply" prop="replyDate" label="回复时间" width="160"></el-table-column>
+        <el-table-column v-if="isReply" prop="replyContent" label="回复内容" width="160"></el-table-column>
+      </el-table>
+      
+      <el-row style="margin-top: 15px;">
+        <el-col :span="24" align="center">
+          <el-pagination
+            size="mini"
+            background
+            v-on:current-change="handleCurrentChange"
+            :current-page="page"
+            :page-size="pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
+        </el-col>
+      </el-row>
+
+      <!-- <div class="card-box">
         <div class="table-responsive mt-3">
           <table class="table tablesaw table-hover m-0">
             <thead>
@@ -69,16 +107,18 @@
               :searchable="false" :show-labels="false"></multiselect>
           </div>
         </div>
-      </div>
+      </div> -->
     </template>
   </div>
 </body>
 
 </html>
-<script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
-<script src="../../assets/lib/lodash-4.17.10.min.js" type="text/javascript"></script>
-<script src="../../assets/lib/es6-promise.auto.min.js" type="text/javascript"></script>
-<script src="../../assets/lib/axios-0.18.0.min.js" type="text/javascript"></script>
-<script src="../../assets/lib/vue-multiselect-2.1.0/script.min.js" type="text/javascript"></script>
-<script src="../../assets/lib/sweetalert2-7.28.4.all.min.js" type="text/javascript"></script>
-<script src="../../assets/js/list.js" type="text/javascript"></script>
+
+<script src="/sitefiles/assets/lib/es6-promise.auto.min.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/axios-0.17.1.min.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/core-js-3.6.5.min.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/lodash-4.17.10.min.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/elementui/index.js"></script>
+<script src="/sitefiles/assets/js/utils.js" type="text/javascript"></script>
+<script src="/assets/form/list.js" type="text/javascript"></script>

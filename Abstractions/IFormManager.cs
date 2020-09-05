@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSCMS.Form.Core;
+using SSCMS.Configuration;
 using SSCMS.Form.Models;
 using SSCMS.Form.Utils.Atom.Atom.AdditionalElements;
 using SSCMS.Models;
@@ -12,6 +12,10 @@ namespace SSCMS.Form.Abstractions
         Task<FormInfo> GetFormInfoByRequestAsync(int siteId, int channelId, int contentId, int formId);
 
         Task CreateDefaultStylesAsync(FormInfo formInfo);
+
+        List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles);
+
+        Task<DataInfo> GetDataInfoAsync(int dataId, int formId, List<TableStyle> styles);
 
         Task DeleteAsync(int siteId, int formId);
 
@@ -46,17 +50,11 @@ namespace SSCMS.Form.Abstractions
 
         void DeleteTemplate(string name);
 
-        string GetTableName(FormRequest request);
+        List<int> GetRelatedIdentities(int formId);
 
-        string GetTableName(FormInfo formInfo);
+        Task DeleteTableStyleAsync(int formId, string attributeName);
 
-        List<int> GetRelatedIdentities(FormRequest request);
-
-        List<int> GetRelatedIdentities(FormInfo formInfo);
-
-        Task DeleteTableStyleAsync(string tableName, List<int> relatedIdentities, string attributeName);
-
-        Task<List<TableStyle>> GetTableStylesAsync(string tableName, List<int> relatedIdentities);
+        Task<List<TableStyle>> GetTableStylesAsync(int formId);
 
         int GetPageSize(FormInfo formInfo);
     }

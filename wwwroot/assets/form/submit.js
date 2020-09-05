@@ -1,4 +1,4 @@
-$apiUrl = utils.getQueryString('apiUrl');
+$apiUrl = utils.getQueryString('apiUrl') || $formConfigApiUrl;
 $rootUrl = "/";
 $token = localStorage.getItem(USER_ACCESS_TOKEN_NAME);
 
@@ -12,11 +12,8 @@ var $api = axios.create({
 var $url = '/form';
 
 var data = utils.init({
-  apiUrl: utils.getQueryString('apiUrl'),
-  siteId: utils.getQueryInt('siteId'),
-  channelId: utils.getQueryInt('channelId'),
-  contentId: utils.getQueryInt('contentId'),
-  formId: utils.getQueryInt('formId'),
+  siteId: utils.getQueryInt('siteId') || $formConfigSiteId,
+  formId: utils.getQueryInt('formId') || $formConfigFormId,
   pageType: '',
   styles: [],
   title: '',
@@ -46,6 +43,33 @@ var methods = {
     style.value = [];
   },
 
+  getForm: function(styles, value) {
+    var form =  _.assign({}, value);
+    for (var i = 0; i < styles.length; i++) {
+      var style = styles[i];
+      var name = _.lowerFirst(style.attributeName);
+      if (style.inputType === 'TextEditor') {
+        setTimeout(function () {
+          var editor = UE.getEditor(style.attributeName, {
+            allowDivTransToP: false,
+            maximumWords: 99999999
+          });
+          editor.attributeName = style.attributeName;
+          editor.ready(function () {
+            editor.addListener("contentChange", function () {
+              $this.form[this.attributeName] = this.getContent();
+            });
+          });
+        }, 100);
+      } else if (style.inputType === 'CheckBox' || style.inputType === 'SelectMultiple') {
+        if (!form[name] || !Array.isArray(form[name])) {
+          form[name] = [];
+        }
+      }
+    }
+    return form;
+  },
+
   apiGet: function () {
     var $this = this;
 
@@ -57,29 +81,10 @@ var methods = {
       $this.description = res.description;
       $this.isCaptcha = res.isCaptcha;
       $this.styles = res.styles;
-      $this.form = {
+      $this.form = $this.getForm(res.styles, _.assign({
         captcha: ''
-      };
+      }, res.dataInfo));
       $this.pageType = 'form';
-
-      setTimeout(function () {
-        for (var i = 0; i < $this.styles.length; i++) {
-          var style = $this.styles[i];
-          if (style.inputType === 'TextEditor') {
-            var editor = UE.getEditor(style.attributeName, {
-              allowDivTransToP: false,
-              maximumWords: 99999999
-            });
-            editor.attributeName = style.attributeName;
-            editor.ready(function () {
-              editor.addListener("contentChange", function () {
-                $this.form[this.attributeName] = this.getContent();
-              });
-            });
-          }
-        }
-      }, 100);
-      
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

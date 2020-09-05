@@ -31,16 +31,16 @@ namespace SSCMS.Form.Core
         private readonly IPluginManager _pluginManager;
         private readonly IFormRepository _formRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
-        private readonly IDataRepository _logRepository;
+        private readonly IDataRepository _dataRepository;
 
-        public FormManager(ICacheManager<string> cacheManager, IPathManager pathManager, IPluginManager pluginManager, IFormRepository formRepository, ITableStyleRepository tableStyleRepository, IDataRepository logRepository)
+        public FormManager(ICacheManager<string> cacheManager, IPathManager pathManager, IPluginManager pluginManager, IFormRepository formRepository, ITableStyleRepository tableStyleRepository, IDataRepository dataRepository)
         {
             _cacheManager = cacheManager;
             _pathManager = pathManager;
             _pluginManager = pluginManager;
             _formRepository = formRepository;
             _tableStyleRepository = tableStyleRepository;
-            _logRepository = logRepository;
+            _dataRepository = dataRepository;
         }
 
         public async Task<FormInfo> GetFormInfoByRequestAsync(int siteId, int channelId, int contentId, int formId)
@@ -76,14 +76,133 @@ namespace SSCMS.Form.Core
 
         public const string DefaultListAttributeNames = "Name,Mobile,Email,Content";
 
+        public List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles)
+        {
+            var columns = new List<ContentColumn>
+            {
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.Id),
+                    DisplayName = "Id",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.Id))
+                },
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.Guid),
+                    DisplayName = "编号",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.Guid))
+                }
+            };
+
+            foreach (var style in styles)
+            {
+                if (string.IsNullOrEmpty(style.DisplayName) || style.InputType == InputType.TextEditor) continue;
+
+                var column = new ContentColumn
+                {
+                    AttributeName = style.AttributeName,
+                    DisplayName = style.DisplayName,
+                    InputType = style.InputType,
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, style.AttributeName)
+                };
+
+                columns.Add(column);
+            }
+
+            columns.AddRange(new List<ContentColumn>
+            {
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.CreatedDate),
+                    DisplayName = "添加时间",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.CreatedDate))
+                },
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.LastModifiedDate),
+                    DisplayName = "更新时间",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.LastModifiedDate))
+                }
+            });
+
+            return columns;
+        }
+
+        public async Task<DataInfo> GetDataInfoAsync(int dataId, int formId, List<TableStyle> styles)
+        {
+            DataInfo dataInfo;
+            if (dataId > 0)
+            {
+                dataInfo = await _dataRepository.GetDataInfoAsync(dataId);
+            }
+            else
+            {
+                dataInfo = new DataInfo
+                {
+                    FormId = formId
+                };
+
+                foreach (var style in styles)
+                {
+                    if (style.InputType == InputType.Text || style.InputType == InputType.TextArea || style.InputType == InputType.TextEditor || style.InputType == InputType.Hidden)
+                    {
+                        if (string.IsNullOrEmpty(style.DefaultValue)) continue;
+
+                        dataInfo.Set(style.AttributeName, style.DefaultValue);
+                    }
+                    else if (style.InputType == InputType.Number)
+                    {
+                        if (string.IsNullOrEmpty(style.DefaultValue)) continue;
+
+                        dataInfo.Set(style.AttributeName, TranslateUtils.ToInt(style.DefaultValue));
+                    }
+                    else if (style.InputType == InputType.CheckBox || style.InputType == InputType.SelectMultiple)
+                    {
+                        var value = new List<string>();
+
+                        if (style.Items != null)
+                        {
+                            foreach (var item in style.Items)
+                            {
+                                if (item.Selected)
+                                {
+                                    value.Add(item.Value);
+                                }
+                            }
+                        }
+
+                        dataInfo.Set(style.AttributeName, value);
+                    }
+                    else if (style.InputType == InputType.Radio || style.InputType == InputType.SelectOne)
+                    {
+                        if (style.Items != null)
+                        {
+                            foreach (var item in style.Items)
+                            {
+                                if (item.Selected)
+                                {
+                                    dataInfo.Set(style.AttributeName, item.Value);
+                                }
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(style.DefaultValue))
+                        {
+                            dataInfo.Set(style.AttributeName, style.DefaultValue);
+                        }
+                    }
+                }
+            }
+
+            return dataInfo;
+        }
+
         public async Task CreateDefaultStylesAsync(FormInfo formInfo)
         {
-            var tableName = GetTableName(formInfo);
-            var relatedIdentities = GetRelatedIdentities(formInfo);
+            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
 
             await _tableStyleRepository.InsertAsync(relatedIdentities, new TableStyle
             {
-                TableName = tableName,
+                TableName = FormUtils.TableNameData,
                 RelatedIdentity = relatedIdentities[0],
                 AttributeName = "Name",
                 DisplayName = "姓名",
@@ -101,7 +220,7 @@ namespace SSCMS.Form.Core
 
             await _tableStyleRepository.InsertAsync(relatedIdentities, new TableStyle
             {
-                TableName = tableName,
+                TableName = FormUtils.TableNameData,
                 RelatedIdentity = relatedIdentities[0],
                 AttributeName = "Mobile",
                 DisplayName = "手机",
@@ -119,7 +238,7 @@ namespace SSCMS.Form.Core
 
             await _tableStyleRepository.InsertAsync(relatedIdentities, new TableStyle
             {
-                TableName = tableName,
+                TableName = FormUtils.TableNameData,
                 RelatedIdentity = relatedIdentities[0],
                 AttributeName = "Email",
                 DisplayName = "邮箱",
@@ -137,7 +256,7 @@ namespace SSCMS.Form.Core
 
             await _tableStyleRepository.InsertAsync(relatedIdentities, new TableStyle
             {
-                TableName = tableName,
+                TableName = FormUtils.TableNameData,
                 RelatedIdentity = relatedIdentities[0],
                 AttributeName = "Content",
                 DisplayName = "留言",
@@ -159,11 +278,10 @@ namespace SSCMS.Form.Core
             if (formId <= 0) return;
 
             var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);
-            var tableName = GetTableName(formInfo);
-            var relatedIdentities = GetRelatedIdentities(formInfo);
+            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
 
-            await _tableStyleRepository.DeleteAllAsync(tableName, relatedIdentities);
-            await _logRepository.DeleteByFormIdAsync(formId);
+            await _tableStyleRepository.DeleteAllAsync(FormUtils.TableNameData, relatedIdentities);
+            await _dataRepository.DeleteByFormIdAsync(formId);
             await _formRepository.DeleteAsync(siteId, formId);
         }
 
@@ -252,7 +370,7 @@ namespace SSCMS.Form.Core
                 {
                     var dataInfo = new DataInfo();
 
-                    foreach (var tableColumn in _logRepository.TableColumns)
+                    foreach (var tableColumn in _dataRepository.TableColumns)
                     {
                         var value = GetValue(entry.AdditionalElements, tableColumn);
                         dataInfo.Set(tableColumn.AttributeName, value);
@@ -279,7 +397,7 @@ namespace SSCMS.Form.Core
                         dataInfo.CreatedDate = FormUtils.ToDateTime(GetDcElementContent(entry.AdditionalElements, "adddate"));
                     }
 
-                    await _logRepository.InsertAsync(formInfo, dataInfo);
+                    await _dataRepository.InsertAsync(formInfo, dataInfo);
                 }
             }
         }
@@ -291,9 +409,8 @@ namespace SSCMS.Form.Core
             if (!Directory.Exists(styleDirectoryPath)) return titleAttributeNameDict;
 
             var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);
-            var tableName = GetTableName(formInfo);
-            var relatedIdentities = GetRelatedIdentities(formInfo);
-            await _pathManager.ImportStylesAsync(tableName, relatedIdentities, styleDirectoryPath);
+            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
+            await _pathManager.ImportStylesAsync(FormUtils.TableNameData, relatedIdentities, styleDirectoryPath);
 
             //var filePaths = Directory.GetFiles(styleDirectoryPath);
             //foreach (var filePath in filePaths)
@@ -368,13 +485,12 @@ namespace SSCMS.Form.Core
 
             var styleDirectoryPath = PathUtils.Combine(directoryPath, formInfo.Id.ToString());
 
-            var tableName = GetTableName(formInfo);
-            var relatedIdentities = GetRelatedIdentities(formInfo);
+            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
 
-            await _pathManager.ExportStylesAsync(siteId, tableName, relatedIdentities);
+            await _pathManager.ExportStylesAsync(siteId, FormUtils.TableNameData, relatedIdentities);
             //await ExportFieldsAsync(formInfo.Id, styleDirectoryPath);
 
-            var dataInfoList = await _logRepository.GetAllDataInfoListAsync(formInfo);
+            var dataInfoList = await _dataRepository.GetAllDataInfoListAsync(formInfo);
             foreach (var dataInfo in dataInfoList)
             {
                 var entry = GetAtomEntry(dataInfo);
@@ -798,7 +914,7 @@ namespace SSCMS.Form.Core
         public void Clone(string nameToClone, TemplateInfo templateInfo, string templateHtml = null)
         {
             var plugin = _pluginManager.GetPlugin(PluginId);
-            var directoryPath = PathUtils.Combine(plugin.ContentRootPath, "assets/form/templates");
+            var directoryPath = PathUtils.Combine(plugin.WebRootPath, "assets/form/templates");
 
             DirectoryUtils.Copy(PathUtils.Combine(directoryPath, nameToClone), PathUtils.Combine(directoryPath, templateInfo.Name), true);
 
@@ -846,51 +962,19 @@ namespace SSCMS.Form.Core
             DirectoryUtils.DeleteDirectoryIfExists(templatePath);
         }
 
-        public string GetTableName(FormRequest request)
+        public List<int> GetRelatedIdentities(int formId)
         {
-            return request.FormId > 0 ? FormUtils.TableNameData : FormUtils.TableNameContent;
+            return new List<int> { formId };
         }
 
-        public string GetTableName(FormInfo formInfo)
+        public async Task<List<TableStyle>> GetTableStylesAsync(int formId)
         {
-            return formInfo.ChannelId > 0 && formInfo.ContentId > 0 ? FormUtils.TableNameContent : FormUtils.TableNameData;
+            return await _tableStyleRepository.GetTableStylesAsync(FormUtils.TableNameData, GetRelatedIdentities(formId), MetadataAttributes.Value);
         }
 
-        public List<int> GetRelatedIdentities(FormRequest request)
+        public async Task DeleteTableStyleAsync(int formId, string attributeName)
         {
-            return GetRelatedIdentities(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
-        }
-
-        public List<int> GetRelatedIdentities(FormInfo formInfo)
-        {
-            var formId = formInfo.ChannelId > 0 && formInfo.ContentId > 0 ? 0 : formInfo.Id;
-            return GetRelatedIdentities(formInfo.SiteId, formInfo.ChannelId, formInfo.ContentId, formId);
-        }
-
-        private static List<int> GetRelatedIdentities(int siteId, int channelId, int contentId, int formId)
-        {
-            var list = new List<int> { siteId, 0 };
-            if (formId > 0)
-            {
-                list.Insert(0, formId);
-            }
-            else
-            {
-                list.Insert(0, channelId);
-                list.Insert(0, contentId);
-            }
-
-            return list;
-        }
-
-        public async Task<List<TableStyle>> GetTableStylesAsync(string tableName, List<int> relatedIdentities)
-        {
-            return await _tableStyleRepository.GetTableStylesAsync(tableName, relatedIdentities, MetadataAttributes.Value);
-        }
-
-        public async Task DeleteTableStyleAsync(string tableName, List<int> relatedIdentities, string attributeName)
-        {
-            await _tableStyleRepository.DeleteAsync(tableName, relatedIdentities[0], attributeName);
+            await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formId, attributeName);
         }
 
         private static readonly Lazy<List<string>> MetadataAttributes = new Lazy<List<string>>(() => new List<string>

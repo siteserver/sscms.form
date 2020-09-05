@@ -94,7 +94,7 @@ namespace SSCMS.Form.Core
             return await _repository.CountAsync(Q.Where(Attr.FormId, formId));
         }
 
-        public async Task<(int Total, IList<DataInfo>)> GetDataAsync(FormInfo formInfo, bool isRepliedOnly, string word, int page, int pageSize)
+        public async Task<(int Total, List<DataInfo>)> GetDataAsync(FormInfo formInfo, bool isRepliedOnly, string word, int page, int pageSize)
         {
             if (formInfo.TotalCount == 0)
             {
@@ -187,31 +187,6 @@ namespace SSCMS.Form.Core
             }
 
             return value;
-        }
-
-        public Dictionary<string, object> GetDict(List<TableStyle> styles, DataInfo dataInfo)
-        {
-            var dict = new Dictionary<string, object>
-            {
-                {nameof(DataInfo.Id), dataInfo.Id},
-                {nameof(DataInfo.Guid), dataInfo.Guid},
-                {nameof(DataInfo.IsReplied), dataInfo.IsReplied},
-                {nameof(DataInfo.ReplyContent), dataInfo.IsReplied ? dataInfo.ReplyContent : string.Empty}
-            };
-            if (dataInfo.CreatedDate.HasValue)
-            {
-                dict[nameof(DataInfo.CreatedDate)] = dataInfo.CreatedDate.Value.ToString("yyyy-MM-dd HH:mm");
-            }
-            if (dataInfo.ReplyDate.HasValue)
-            {
-                dict[nameof(DataInfo.ReplyDate)] = dataInfo.ReplyDate.Value.ToString("yyyy-MM-dd HH:mm");
-            }
-            foreach (var style in styles)
-            {
-                dict[style.AttributeName] = GetValue(style, dataInfo);
-            }
-
-            return dict;
         }
     }
 }

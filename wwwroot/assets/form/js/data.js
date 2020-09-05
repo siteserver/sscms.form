@@ -58,7 +58,7 @@ var methods = {
 
     utils.loading(true);
     $api.delete($url, {
-      params: {
+      data: {
         siteId: this.siteId,
         channelId: this.channelId,
         contentId: this.contentId,

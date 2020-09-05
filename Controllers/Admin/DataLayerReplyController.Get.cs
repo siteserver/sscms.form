@@ -16,9 +16,7 @@ namespace SSCMS.Form.Controllers.Admin
             var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
             if (formInfo == null) return NotFound();
 
-            var tableName = _formManager.GetTableName(request);
-            var relatedIdentities = _formManager.GetRelatedIdentities(request);
-            var styles = await _formManager.GetTableStylesAsync(tableName, relatedIdentities);
+            var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
             var dataInfo = await _dataRepository.GetDataInfoAsync(request.DataId);
 

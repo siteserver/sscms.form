@@ -67,7 +67,7 @@ var methods = {
     var $this = this;
     this.templateHtml = this.getEditorContent();
     utils.loading(this, true);
-    $api.post('', {
+    $api.post($url, {
       name: this.name,
       templateHtml: this.templateHtml
     }).then(function (response) {

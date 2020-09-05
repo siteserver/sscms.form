@@ -27,6 +27,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             var templateInfo = new TemplateInfo
             {
+                Type = request.Type,
                 Name = request.Name,
                 Main = originalTemplateInfo.Main,
                 Publisher = string.Empty,

@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\FormController.DeleteFile.cs" />
+    <Compile Remove="Controllers\FormController.UploadFile.cs" />
     <Compile Remove="Plugin.cs" />
   </ItemGroup>
 

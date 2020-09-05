@@ -6,7 +6,7 @@
   <title>表单</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <script type="text/javascript" src="../../lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
+  <script type="text/javascript" src="/assets/form/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
   <link href="/sitefiles/assets/lib/elementui/themechalk/index.css" rel="stylesheet" type="text/css" />
   <link href="/sitefiles/assets/css/element-ui.css" rel="stylesheet" type="text/css" />
 </head>
@@ -22,7 +22,7 @@
         {{ description }}
       </el-row>
 
-      <el-form size="medium" ref="form" :model="form" label-width="120px" style="margin-top: 15px;">
+      <el-form size="medium" ref="form" :model="form" label-width="150px" style="margin-top: 15px;">
 
         <template v-for="style in styles" :key="style.attributeName">
           <!-- Image -->
@@ -66,7 +66,6 @@
                 </el-button-group>
                 <el-input
                   v-model="form[utils.getExtendName(style.attributeName, n)]"
-                
                   :placeholder="style.helpText || '请输入图片地址或点击上方按钮上传'">
                 </el-input>
               </template>
@@ -107,7 +106,6 @@
                 </el-button-group>
                 <el-input
                   v-model="form[utils.getExtendName(style.attributeName, n)]"
-                
                   :placeholder="style.helpText || '请输入附件地址或点击上方按钮上传'">
                 </el-input>
               </template>
@@ -148,7 +146,6 @@
                 </el-button-group>
                 <el-input
                   v-model="form[utils.getExtendName(style.attributeName, n)]"
-                
                   :placeholder="style.helpText || '请输入视频地址或点击上方按钮上传'">
                 </el-input>
               </template>
@@ -276,19 +273,6 @@
         <el-form-item v-if="isCaptcha" label="验证码" prop="captcha" :rules="{ required: true, message: '请输入验证码' }">
           <el-input v-model="form.captcha" placeholder="请输入验证码"></el-input>
         </el-form-item>
-
-        <!-- <div v-if="isCaptcha" class="form-group">
-          <label> 验证码 <span class="text-danger">*</span>
-            <small v-show="errors.has('captcha')" class="text-danger">{{ errors.first('captcha') }}</small>
-            <small v-show="captchaInValid" class="text-danger">验证码不正确，请重新输入！</small>
-          </label>
-          <div class="clearfix">
-            <input v-model="captcha" type="text" class="form-control float-left" style="width:180px; margin-right: 10px"
-              name="captcha" data-vv-as="验证码" v-validate="'required'" :class="{'is-invalid':
-  errors.has('captcha') || captchaInValid}">
-            <img :src="captchaUrl" v-on:click="loadCaptcha" class="float-left" style="width: 105px; height: 38px" />
-          </div>
-        </div> -->
         
       </el-form>
 
@@ -296,6 +280,7 @@
         <el-divider></el-divider>
         <div style="height: 10px"></div>
         <el-button type="primary" size="medium" v-on:click="btnSubmitClick">提 交</el-button>
+        <div style="height: 10px"></div>
       </el-row>
 
     </template>
@@ -311,7 +296,7 @@
     </template>
     <template v-else>
       <el-row style="margin-top: 100px; text-align: center">
-        <img src="../../images/loading.gif" />
+        <img src="/assets/form/images/loading.gif" />
         <p>载入中，请稍后...</p>
       </el-row>
     </template>
@@ -330,5 +315,4 @@
 <script src="/sitefiles/assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/lib/elementui/index.js"></script>
 <script src="/sitefiles/assets/js/utils.js" type="text/javascript"></script>
-
-<script src="../../submit.js" type="text/javascript"></script>
+<script src="/assets/form/submit.js" type="text/javascript"></script>

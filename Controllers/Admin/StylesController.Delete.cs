@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SSCMS.Configuration;
 using SSCMS.Form.Core;
-using SSCMS.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
 {
@@ -18,12 +15,12 @@ namespace SSCMS.Form.Controllers.Admin
                 return Unauthorized();
             }
 
-            var tableName = _formManager.GetTableName(request);
-            var relatedIdentities = _formManager.GetRelatedIdentities(request);
+            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            if (formInfo == null) return NotFound();
 
-            await _formManager.DeleteTableStyleAsync(tableName, relatedIdentities, request.AttributeName);
+            await _formManager.DeleteTableStyleAsync(formInfo.Id, request.AttributeName);
 
-            var styles = await _formManager.GetTableStylesAsync(tableName, relatedIdentities);
+            var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
             return new DeleteResult
             {

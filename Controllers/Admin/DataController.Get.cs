@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
@@ -21,64 +20,16 @@ namespace SSCMS.Form.Controllers.Admin
             var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
             if (formInfo == null) return NotFound();
 
-            var tableName = _formManager.GetTableName(request);
-            var relatedIdentities = _formManager.GetRelatedIdentities(request);
-            var styles = await _formManager.GetTableStylesAsync(tableName, relatedIdentities);
+            var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
             var listAttributeNames = ListUtils.GetStringList(formInfo.ListAttributeNames);
             var allAttributeNames = _formRepository.GetAllAttributeNames(styles);
             var pageSize = _formManager.GetPageSize(formInfo);
 
             var (total, dataInfoList) = await _dataRepository.GetDataAsync(formInfo, false, null, request.Page, pageSize);
-            var items = dataInfoList.Select(dataInfo => _dataRepository.GetDict(styles, dataInfo)).ToList();
+            var items = dataInfoList;
 
-            var columns = new List<ContentColumn>
-            {
-                new ContentColumn
-                {
-                    AttributeName = nameof(DataInfo.Id),
-                    DisplayName = "Id",
-                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.Id))
-                },
-                new ContentColumn
-                {
-                    AttributeName = nameof(DataInfo.Guid),
-                    DisplayName = "编号",
-                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.Guid))
-                }
-            };
-
-            foreach (var style in styles)
-            {
-                if (string.IsNullOrEmpty(style.DisplayName) || style.InputType == InputType.TextEditor) continue;
-
-                var column = new ContentColumn
-                {
-                    AttributeName = style.AttributeName,
-                    DisplayName = style.DisplayName,
-                    InputType = style.InputType,
-                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, style.AttributeName)
-                };
-
-                columns.Add(column);
-            }
-
-            columns.AddRange(new List<ContentColumn>
-            {
-                
-                new ContentColumn
-                {
-                    AttributeName = nameof(DataInfo.CreatedDate),
-                    DisplayName = "添加时间",
-                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.CreatedDate))
-                },
-                new ContentColumn
-                {
-                    AttributeName = nameof(DataInfo.LastModifiedDate),
-                    DisplayName = "更新时间",
-                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.LastModifiedDate))
-                }
-            });
+            var columns = _formManager.GetColumns(listAttributeNames, styles);
 
             return new GetResult
             {
