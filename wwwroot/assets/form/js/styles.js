@@ -4,10 +4,7 @@ var $urlExport = '/form/styles/actions/export';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
-  channelId: utils.getQueryInt('channelId'),
-  contentId: utils.getQueryInt('contentId'),
   formId: utils.getQueryInt('formId'),
-  returnUrl: utils.getQueryString('returnUrl'),
   navType: 'styles',
   
   inputTypes: null,
@@ -40,8 +37,6 @@ var methods = {
     $api.get($url, {
       params: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId
       }
     }).then(function (response) {
@@ -67,8 +62,6 @@ var methods = {
     $api.delete($url, {
       data: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId,
         attributeName: attributeName
       }
@@ -101,8 +94,6 @@ var methods = {
   btnNavClick: function() {
     location.href = utils.getRootUrl('form/' + this.navType, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     });
   },
@@ -113,7 +104,8 @@ var methods = {
       url: utils.getCommonUrl('tableStyleLayerEditor', {
         tableName: this.tableName,
         relatedIdentities: this.relatedIdentities,
-        attributeName: attributeName
+        attributeName: attributeName,
+        excludes: 'TextEditor,SelectCascading,Customize,Image,Video,File'
       })
     });
   },
@@ -146,7 +138,8 @@ var methods = {
       title: '新增字段',
       url: utils.getCommonUrl('tableStyleLayerEditor', {
         tableName: this.tableName,
-        relatedIdentities: this.relatedIdentities
+        relatedIdentities: this.relatedIdentities,
+        excludes: 'TextEditor,SelectCascading,Customize,Image,Video,File'
       })
     });
   },
@@ -156,17 +149,14 @@ var methods = {
       title: '批量新增字段',
       url: utils.getCommonUrl('tableStyleLayerAddMultiple', {
         tableName: this.tableName,
-        relatedIdentities: this.relatedIdentities
+        relatedIdentities: this.relatedIdentities,
+        excludes: 'TextEditor,SelectCascading,Customize,Image,Video,File'
       })
     });
   },
 
   btnImportClick: function() {
     this.uploadPanel = true;
-  },
-
-  btnReturnClick: function () {
-    location.href = this.returnUrl;
   },
 
   uploadBefore(file) {
@@ -201,8 +191,6 @@ var methods = {
     utils.loading(this, true);
     $api.post($urlExport, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     }).then(function (response) {
       var res = response.data;

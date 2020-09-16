@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
 using SSCMS.Form.Abstractions;
 using SSCMS.Form.Core;
+using SSCMS.Form.Models;
 using SSCMS.Services;
 
 namespace SSCMS.Form.Controllers.Admin
@@ -34,7 +35,8 @@ namespace SSCMS.Form.Controllers.Admin
 
         public class GetResult
         {
-            public IDictionary<string, object> Dict { get; set; }
+            public List<ContentColumn> Columns { get; set; }
+            public DataInfo DataInfo { get; set; }
             public List<string> AttributeNames { get; set; }
         }
 

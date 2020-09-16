@@ -12,7 +12,7 @@ namespace SSCMS.Form.Controllers.Admin
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsTemplates))
                 return Unauthorized();
 
-            var formInfoList = await _formRepository.GetFormInfoListAsync(request.SiteId, 0);
+            var formInfoList = await _formRepository.GetFormInfoListAsync(request.SiteId);
             var templateInfoList = _formManager.GetTemplateInfoList(request.Type);
 
             return new ListResult

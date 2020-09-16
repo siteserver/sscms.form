@@ -44,11 +44,11 @@ namespace SSCMS.Form.Core
                 }
             }
 
-            var formInfo = !string.IsNullOrEmpty(formName) ? await _formRepository.GetFormInfoByTitleAsync(context.SiteId, formName) : await _formRepository.GetFormInfoByContentIdAsync(context.SiteId, context.ChannelId, context.ContentId);
+            var formInfo = !string.IsNullOrEmpty(formName) ? await _formRepository.GetFormInfoByTitleAsync(context.SiteId, formName) : null;
 
             if (formInfo == null)
             {
-                var formInfoList = await _formRepository.GetFormInfoListAsync(context.SiteId, 0);
+                var formInfoList = await _formRepository.GetFormInfoListAsync(context.SiteId);
                 if (formInfoList != null && formInfoList.Count > 0)
                 {
                     formInfo = formInfoList[0];

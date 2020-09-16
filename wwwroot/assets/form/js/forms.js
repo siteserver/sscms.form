@@ -57,8 +57,6 @@ var methods = {
   btnViewClick: function (form) {
     utils.addTab('表单管理：' + form.title, utils.getRootUrl('form/data', {
       siteId: this.siteId,
-      channelId: 0,
-      contentId: 0,
       formId: form.id
     }));
   },

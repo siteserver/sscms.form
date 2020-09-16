@@ -1,15 +1,10 @@
 var $url = '/form/dataAdd';
 
 var data = utils.init({
-  apiUrl: utils.getQueryString('apiUrl'),
   siteId: utils.getQueryInt('siteId'),
-  channelId: utils.getQueryInt('channelId'),
-  contentId: utils.getQueryInt('contentId'),
   formId: utils.getQueryInt('formId'),
   dataId: utils.getQueryInt('dataId'),
-  returnUrl: utils.getQueryString('returnUrl'),
   navType: 'data',
-  pageType: '',
   styles: [],
   uploadUrl: null,
   files: [],
@@ -40,8 +35,6 @@ var methods = {
     $api.get($url, {
       params: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId,
         dataId: this.dataId
       }
@@ -115,8 +108,6 @@ var methods = {
   btnNavClick: function() {
     location.href = utils.getRootUrl('form/' + this.navType, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     });
   },

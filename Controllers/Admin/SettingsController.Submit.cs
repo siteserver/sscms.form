@@ -13,28 +13,28 @@ namespace SSCMS.Form.Controllers.Admin
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
 
-            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
 
-            formInfo.IsClosed = request.Form.IsClosed;
-            formInfo.Title = request.Form.Title;
-            formInfo.Description = request.Form.Description;
-            formInfo.IsReply = request.Form.IsReply;
-            formInfo.PageSize = request.Form.PageSize;
-            formInfo.IsTimeout = request.Form.IsTimeout;
-            formInfo.TimeToStart = request.Form.TimeToStart;
-            formInfo.TimeToEnd = request.Form.TimeToEnd;
-            formInfo.IsCaptcha = request.Form.IsCaptcha;
-            formInfo.IsAdministratorSmsNotify = request.Form.IsAdministratorSmsNotify;
-            formInfo.AdministratorSmsNotifyTplId = request.Form.AdministratorSmsNotifyTplId;
-            formInfo.AdministratorSmsNotifyKeys = request.Form.AdministratorSmsNotifyKeys;
-            formInfo.AdministratorSmsNotifyMobile = request.Form.AdministratorSmsNotifyMobile;
-            formInfo.IsAdministratorMailNotify = request.Form.IsAdministratorMailNotify;
-            formInfo.AdministratorMailNotifyAddress = request.Form.AdministratorMailNotifyAddress;
-            formInfo.IsUserSmsNotify = request.Form.IsUserSmsNotify;
-            formInfo.UserSmsNotifyTplId = request.Form.UserSmsNotifyTplId;
-            formInfo.UserSmsNotifyKeys = request.Form.UserSmsNotifyKeys;
-            formInfo.UserSmsNotifyMobileName = request.Form.UserSmsNotifyMobileName;
+            formInfo.IsClosed = request.IsClosed;
+            formInfo.Title = request.Title;
+            formInfo.Description = request.Description;
+            formInfo.IsReply = request.IsReply;
+            formInfo.PageSize = request.PageSize;
+            formInfo.IsTimeout = request.IsTimeout;
+            formInfo.TimeToStart = request.TimeToStart;
+            formInfo.TimeToEnd = request.TimeToEnd;
+            formInfo.IsCaptcha = request.IsCaptcha;
+            formInfo.IsAdministratorSmsNotify = request.IsAdministratorSmsNotify;
+            formInfo.AdministratorSmsNotifyTplId = request.AdministratorSmsNotifyTplId;
+            formInfo.AdministratorSmsNotifyKeys = request.AdministratorSmsNotifyKeys;
+            formInfo.AdministratorSmsNotifyMobile = request.AdministratorSmsNotifyMobile;
+            formInfo.IsAdministratorMailNotify = request.IsAdministratorMailNotify;
+            formInfo.AdministratorMailNotifyAddress = request.AdministratorMailNotifyAddress;
+            formInfo.IsUserSmsNotify = request.IsUserSmsNotify;
+            formInfo.UserSmsNotifyTplId = request.UserSmsNotifyTplId;
+            formInfo.UserSmsNotifyKeys = request.UserSmsNotifyKeys;
+            formInfo.UserSmsNotifyMobileName = request.UserSmsNotifyMobileName;
 
             await _formRepository.UpdateAsync(formInfo);
 

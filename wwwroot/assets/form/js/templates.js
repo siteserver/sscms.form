@@ -105,14 +105,13 @@ var methods = {
     });
   },
 
-  btnNavClick: function(type) {
+  btnNavClick: function() {
+    console.log(this.type);
     utils.loading(true);
-    var url = utils.getRootUrl('form/templates', {
+    location.href = utils.getRootUrl('form/templates', {
       siteId: this.siteId,
-      formId: this.formId,
-      type: type
+      type: this.type
     });
-    location.href = url;
   },
 
   btnPreviewClick: function(ids) {

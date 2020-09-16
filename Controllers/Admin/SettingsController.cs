@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
@@ -38,7 +39,26 @@ namespace SSCMS.Form.Controllers.Admin
 
         public class SubmitRequest : FormRequest
         {
-            public FormInfo Form { get; set; }
+            public bool IsClosed { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public bool IsReply { get; set; }
+            public string ListAttributeNames { get; set; }
+            public bool IsCaptcha { get; set; }
+            public int PageSize { get; set; }
+            public bool IsTimeout { get; set; }
+            public DateTime TimeToStart { get; set; }
+            public DateTime TimeToEnd { get; set; }
+            public bool IsAdministratorSmsNotify { get; set; }
+            public string AdministratorSmsNotifyTplId { get; set; }
+            public string AdministratorSmsNotifyKeys { get; set; }
+            public string AdministratorSmsNotifyMobile { get; set; }
+            public bool IsAdministratorMailNotify { get; set; }
+            public string AdministratorMailNotifyAddress { get; set; }
+            public bool IsUserSmsNotify { get; set; }
+            public string UserSmsNotifyTplId { get; set; }
+            public string UserSmsNotifyKeys { get; set; }
+            public string UserSmsNotifyMobileName { get; set; }
         }
     }
 }

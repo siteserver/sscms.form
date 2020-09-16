@@ -1,104 +1,94 @@
-﻿var $url = '/pages/dataLayerReply';
+﻿var $url = '/form/dataLayerReply';
 
-var $apiUrl = utils.getQueryString('apiUrl');
-var $siteId = utils.getQueryString('siteId');
-var $channelId = utils.getQueryString('channelId');
-var $contentId = utils.getQueryString('contentId');
-var $formId = utils.getQueryString('formId');
-var $dataId = utils.getQueryString('dataId');
-
-var data = {
-  pageLoad: false,
-  pageAlert: null,
+var data = utils.init({
+  siteId: utils.getQueryInt('siteId'),
+  formId: utils.getQueryInt('formId'),
+  dataId: utils.getQueryInt('dataId'),
+  columns: null,
   dataInfo: null,
-  attributeNames: null
-};
+  attributeNames: null,
+  form: {
+    replyContent: ''
+  }
+});
 
 var methods = {
-  load: function () {
+  apiGet: function () {
     var $this = this;
 
+    utils.loading(this, true);
     $api.get($url, {
       params: {
-        siteId: $siteId,
-        channelId: $channelId,
-        contentId: $contentId,
-        formId: $formId,
-        dataId: $dataId
+        siteId: this.siteId,
+        formId: this.formId,
+        dataId: this.dataId
       }
     }).then(function (response) {
       var res = response.data;
 
-      $this.dataInfo = res.value;
+      $this.columns = res.columns;
+      $this.dataInfo = res.dataInfo;
       $this.attributeNames = res.attributeNames;
+      $this.form.replyContent = $this.dataInfo.replyContent;
     }).catch(function (error) {
-      $this.pageAlert = utils.getPageAlert(error);
+      utils.error(error);
     }).then(function () {
-      $this.pageLoad = true;
+      utils.loading($this, false);
+    });
+  },
+
+  apiSubmit: function() {
+    var $this = this;
+
+    utils.loading(this, true);
+    $api.post($url, {
+      siteId: this.siteId,
+      formId: this.formId,
+      dataId: this.dataId,
+      replyContent: this.form.replyContent
+    }).then(function (response) {
+      var res = response.data;
+
+      utils.success('回复成功！');
+      parent.location.reload();
+      utils.closeLayer();
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
     });
   },
 
   btnSubmitClick: function () {
     var $this = this;
-    this.$validator.validate().then(function (result) {
-      if (result) {
-        utils.loading(true);
-
-        $api.post($url, {
-          siteId: $siteId,
-          channelId: $channelId,
-          contentId: $contentId,
-          formId: $formId,
-          dataId: $dataId,
-          replyContent: $this.dataInfo.replyContent
-        }).then(function (response) {
-          var res = response.data;
-
-          swal2({
-            toast: true,
-            type: 'success',
-            title: "回复成功",
-            showConfirmButton: false,
-            timer: 1500
-          }).then(function () {
-            parent.location.reload(true);
-            utils.closeLayer();
-          });
-        }).catch(function (error) {
-          $this.pageAlert = utils.getPageAlert(error);
-        }).then(function () {
-          utils.loading(false);
-        });
+    this.$refs.form.validate(function(valid) {
+      if (valid) {
+        $this.apiSubmit();
       }
     });
   },
 
   getAttributeText: function (attributeName) {
-    if (attributeName === 'AddDate') {
-      return '添加时间';
-    } else if (attributeName === 'IsReplied') {
-      return '是否回复';
-    } else if (attributeName === 'ReplyDate') {
-      return '回复时间';
-    }
-    return attributeName;
+    var column = this.columns.find(function (x) {
+      return x.attributeName === attributeName;
+    })
+    return column.displayName;
   },
 
   getAttributeValue: function (attributeName) {
-    if (attributeName === 'IsReplied') {
-      return this.dataInfo.isReplied ? '<strong class="text-primary">已回复</strong>' : '<strong class="text-danger">未回复</strong>';
-    } else if (attributeName === 'ReplyDate') {
-      return this.dataInfo.isReplied ? this.dataInfo.replyDate : '';
-    }
-    return this.dataInfo[_.camelCase(attributeName)];
+    return this.dataInfo[_.lowerFirst(attributeName)];
+  },
+
+  btnCancelClick: function () {
+    utils.closeLayer(false);
   }
 };
 
-new Vue({
+var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
   created: function () {
-    this.load();
+    this.apiGet();
   }
 });

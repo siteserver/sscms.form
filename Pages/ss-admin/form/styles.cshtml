@@ -13,7 +13,6 @@
       <el-tab-pane label="数据列表" name="data"></el-tab-pane>
       <el-tab-pane label="字段管理" name="styles"></el-tab-pane>
       <el-tab-pane label="选项设置" name="settings"></el-tab-pane>
-      <el-tab-pane v-if="returnUrl" label="返回列表" name="return"></el-tab-pane>
     </el-tabs>
   </el-aside>
 
@@ -79,9 +78,6 @@
       </el-button>
       <el-button size="small" type="primary" plain style="margin-left: 0px;" icon="el-icon-download" v-on:click="btnExportClick">
         导 出
-      </el-button>
-      <el-button size="small" type="primary" plain style="margin-left: 0px;" icon="el-icon-left" v-if="returnUrl" v-on:click="btnReturnClick">
-        返 回
       </el-button>
 
       <el-drawer

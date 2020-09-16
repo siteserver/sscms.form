@@ -21,7 +21,7 @@ namespace SSCMS.Form.Controllers
             var (total, dataInfoList) = await _dataRepository.GetDataAsync(formInfo, formInfo.IsReply, request.Word, request.Page, pageSize);
             var items = dataInfoList;
 
-            var columns = _formManager.GetColumns(listAttributeNames, styles);
+            var columns = _formManager.GetColumns(listAttributeNames, styles, formInfo.IsReply);
 
             return new ListResult
             {

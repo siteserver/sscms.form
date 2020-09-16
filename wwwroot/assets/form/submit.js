@@ -1,6 +1,6 @@
 $apiUrl = utils.getQueryString('apiUrl') || $formConfigApiUrl;
 $rootUrl = "/";
-$token = localStorage.getItem(USER_ACCESS_TOKEN_NAME);
+$token = localStorage.getItem(ACCESS_TOKEN_NAME);
 
 var $api = axios.create({
   baseURL: $apiUrl,
@@ -19,8 +19,9 @@ var data = utils.init({
   title: '',
   description: '',
   isCaptcha: false,
+  captcha: '',
+  captchaValue: '',
   captchaUrl: null,
-  captchaInValid: false,
   uploadUrl: null,
   files: [],
   form: null,
@@ -41,6 +42,36 @@ var methods = {
 
   imageRemoved: function(style) {
     style.value = [];
+  },
+
+  apiLoadCaptcha: function () {
+    var $this = this;
+
+    utils.loading(this, true);
+    $api.post('/v1/captcha').then(function (response) {
+      var res = response.data;
+
+      $this.captchaValue = res.value;
+      $this.captchaUrl = $apiUrl + '/v1/captcha/' + res.value;
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+
+  apiCaptchaCheck: function () {
+    var $this = this;
+
+    $api.post('/v1/captcha/actions/check', {
+      captcha: this.form.captcha,
+      value: this.captchaValue
+    }).then(function (res) {
+      $this.apiSubmit();
+    })
+    .catch(function (error) {
+      utils.error(error);
+    });
   },
 
   getForm: function(styles, value) {
@@ -80,6 +111,9 @@ var methods = {
       $this.title = res.title;
       $this.description = res.description;
       $this.isCaptcha = res.isCaptcha;
+      if ($this.isCaptcha) {
+        $this.apiLoadCaptcha();
+      }
       $this.styles = res.styles;
       $this.form = $this.getForm(res.styles, _.assign({
         captcha: ''
@@ -135,7 +169,11 @@ var methods = {
     var $this = this;
     this.$refs.form.validate(function(valid) {
       if (valid) {
-        $this.apiSubmit();
+        if ($this.isCaptcha) {
+          $this.apiCaptchaCheck();
+        } else {
+          $this.apiSubmit();
+        }
       }
     });
   },

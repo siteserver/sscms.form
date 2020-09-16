@@ -4,12 +4,8 @@ var $urlActionsColumns = '/form/data/actions/columns';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
-  channelId: utils.getQueryInt('channelId'),
-  contentId: utils.getQueryInt('contentId'),
   formId: utils.getQueryInt('formId'),
-  returnUrl: utils.getQueryString('returnUrl'),
   navType: 'data',
-  pageType: null,
   styleList: null,
   allAttributeNames: [],
   listAttributeNames: [],
@@ -29,8 +25,6 @@ var methods = {
     $api.get($url, {
       params: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId,
         page: page
       }
@@ -60,8 +54,6 @@ var methods = {
     $api.delete($url, {
       data: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId,
         dataId: dataId
       }
@@ -83,8 +75,6 @@ var methods = {
 
     $api.post($urlActionsColumns, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId,
       attributeNames: attributeNames
     }).then(function(response) {
@@ -111,11 +101,8 @@ var methods = {
   btnEditClick: function (dataId) {
     location.href = utils.getRootUrl('form/dataAdd', {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId,
-      dataId: dataId,
-      returnUrl: this.returnUrl
+      dataId: dataId
     });
   },
 
@@ -124,10 +111,8 @@ var methods = {
       title: '回复',
       url: utils.getRootUrl('form/dataLayerReply', {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId,
-        dataId: this.dataId
+        dataId: dataId
       })
     });
   },
@@ -150,8 +135,6 @@ var methods = {
 
     $api.post($urlActionsExport, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     }).then(function (response) {
       var res = response.data;
@@ -174,8 +157,6 @@ var methods = {
     utils.loading(true);
     $api.post($urlActionsVisible, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId,
       attributeName: attributeName
     }).then(function (response) {
@@ -222,8 +203,6 @@ var methods = {
   btnNavClick: function() {
     location.href = utils.getRootUrl('form/' + this.navType, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     });
   }

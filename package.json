@@ -2,7 +2,7 @@
   "name": "form",
   "displayName": "自定义表单插件",
   "description": "SSCMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "license": "GPL-3.0",
   "publisher": "sscms",
   "engines": {
@@ -21,6 +21,8 @@
   "icon": "/assets/form/logo.svg",
   "output": "",
   "main": "SSCMS.Form.dll",
+  "applyToSites": true,
+  "applyToChannels": false,
   "extensions": {
     "permissions": {
       "form_forms": {
@@ -29,10 +31,6 @@
       },
       "form_templates": {
         "text": "表单模板",
-        "type": ["web", "wx"]
-      },
-      "form_channels_config": {
-        "text": "内容表单设置",
         "type": ["web", "wx"]
       }
     },
@@ -43,8 +41,7 @@
         "type": ["web", "wx"],
         "permissions": [
           "form_forms",
-          "form_templates",
-          "form_channels_config"
+          "form_templates"
         ],
         "menus": {
           "form_forms": {
@@ -55,38 +52,11 @@
           },
           "form_templates": {
             "text": "表单模板",
+            "link": "/ss-admin/form/templates/?type=submit",
             "permissions": ["form_templates"],
-            "order": 2,
-            "menus": {
-              "form_templates_submit": {
-                "text": "表单提交模板",
-                "link": "/ss-admin/form/templates/?type=submit",
-                "order": 1
-              },
-              "form_templates_list": {
-                "text": "数据显示模板",
-                "link": "/ss-admin/form/templates/?type=list",
-                "order": 2
-              }
-            }
-          },
-          "form_channels_config": {
-            "text": "内容表单设置",
-            "link": "/ss-admin/plugins/config/?pluginId=sscms.form",
-            "permissions": ["form_channels_config"],
-            "order": 3
+            "order": 2
           }
         }
-      },
-      "form_contents_all": {
-        "text": "表单管理",
-        "type": ["content"],
-        "link": "/ss-admin/form/data/",
-        "permissions": [
-          "form_forms",
-          "form_templates"
-        ],
-        "order": 1
       }
     },
     "tables": {
@@ -94,14 +64,6 @@
         "columns": [
           {
             "attributeName": "SiteId",
-            "dataType": "Integer"
-          },
-          {
-            "attributeName": "ChannelId",
-            "dataType": "Integer"
-          },
-          {
-            "attributeName": "ContentId",
             "dataType": "Integer"
           },
           {

@@ -13,7 +13,7 @@ namespace SSCMS.Form.Controllers.Admin
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
 
-            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
 
             var dataInfo = await _dataRepository.GetDataInfoAsync(request.DataId);

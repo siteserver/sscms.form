@@ -11,12 +11,6 @@ namespace SSCMS.Form.Models
         public int SiteId { get; set; }
 
         [DataColumn]
-        public int ChannelId { get; set; }
-
-        [DataColumn]
-        public int ContentId { get; set; }
-
-        [DataColumn]
         public string Title { get; set; }
 
         [DataColumn(Length = 2000)]

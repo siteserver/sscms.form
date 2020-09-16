@@ -13,7 +13,7 @@ namespace SSCMS.Form.Controllers.Admin
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
 
-            var formInfo = await _formManager.GetFormInfoByRequestAsync(request.SiteId, request.ChannelId, request.ContentId, request.FormId);
+            var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
 
             var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
@@ -27,9 +27,13 @@ namespace SSCMS.Form.Controllers.Admin
             }
             attributeNames.Remove(nameof(DataInfo.ReplyContent));
 
+            var allAttributeNames = _formRepository.GetAllAttributeNames(styles);
+            var columns = _formManager.GetColumns(allAttributeNames, styles, true);
+
             return new GetResult
             {
-                Dict = dataInfo.ToDictionary(),
+                Columns = columns,
+                DataInfo = dataInfo,
                 AttributeNames = attributeNames
             };
         }

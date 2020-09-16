@@ -14,7 +14,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             await _formRepository.UpdateTaxisToDownAsync(request.SiteId, request.FormId);
 
-            var formInfoList = await _formRepository.GetFormInfoListAsync(request.SiteId, 0);
+            var formInfoList = await _formRepository.GetFormInfoListAsync(request.SiteId);
 
             return new TaxisResult
             {

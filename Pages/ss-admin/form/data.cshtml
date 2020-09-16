@@ -1,13 +1,18 @@
 ﻿@page
 @{ Layout = "_Layout"; }
 
+@section Styles{
+  <style>
+    .el-alert {padding: 2px}
+  </style>
+}
+
 <el-container>
   <el-aside width="100px">
     <el-tabs v-model="navType" tab-position="left" style="height: 100%;" v-on:tab-click="btnNavClick">
       <el-tab-pane label="数据列表" name="data"></el-tab-pane>
       <el-tab-pane label="字段管理" name="styles"></el-tab-pane>
       <el-tab-pane label="选项设置" name="settings"></el-tab-pane>
-      <el-tab-pane v-if="returnUrl" label="返回列表" name="return"></el-tab-pane>
     </el-tabs>
   </el-aside>
 
@@ -77,14 +82,14 @@
       
           </template>
         </el-table-column>
-        <el-table-column v-if="isReply" label="是否回复" width="160">
+        <el-table-column v-if="isReply" label="是否回复" width="80">
           <template slot-scope="scope">
-            <strong v-if="scope.row.isReplied" class="text-primary">已回复</strong>
-            <strong v-else class="text-danger">未回复</strong>
+            <el-alert v-if="scope.row.isReplied" title="已回复" type="success" :closable="false" center></el-alert>
+            <el-alert v-else title="未回复" type="error" :closable="false" center></el-alert>
           </template>
         </el-table-column>
-        <el-table-column v-if="isReply" prop="replyDate" label="回复时间" width="160"></el-table-column>
-        <el-table-column v-if="isReply" prop="replyContent" label="回复内容" width="160"></el-table-column>
+        <el-table-column v-if="isReply && listAttributeNames.indexOf('ReplyDate') !== -1" prop="replyDate" label="回复时间"></el-table-column>
+        <el-table-column v-if="isReply && listAttributeNames.indexOf('ReplyContent') !== -1" prop="replyContent" label="回复内容"></el-table-column>
         <el-table-column
           fixed="right"
           label="操作"

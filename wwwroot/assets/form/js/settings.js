@@ -2,12 +2,8 @@ var $url = '/form/settings';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
-  channelId: utils.getQueryInt('channelId'),
-  contentId: utils.getQueryInt('contentId'),
   formId: utils.getQueryInt('formId'),
-  returnUrl: utils.getQueryString('returnUrl'),
   navType: 'settings',
-  pageType: 'list',
   form: null,
   styleList: [],
   attributeNames: null,
@@ -23,14 +19,12 @@ var methods = {
     $api.get($url, {
       params: {
         siteId: this.siteId,
-        channelId: this.channelId,
-        contentId: this.contentId,
         formId: this.formId
       }
     }).then(function (response) {
       var res = response.data;
 
-      $this.form = res.form;
+      $this.form = _.assign({formId: $this.formId}, res.form);
       if ($this.form.pageSize === 0) {
         $this.form.pageSize = 30;
       }
@@ -45,59 +39,14 @@ var methods = {
     });
   },
 
-  submit: function () {
+  apiSubmit: function () {
     var $this = this;
 
-    var payload = {
-      siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
-      formId: this.formId,
-      type: this.pageType
-    };
-    if (this.pageType === 'isClosed') {
-      payload.isClosed = this.form.isClosed;
-    } else if (this.pageType === 'title') {
-      payload.title = this.form.title;
-    } else if (this.pageType === 'description') {
-      payload.description = this.form.description;
-    } else if (this.pageType === 'isReply') {
-      payload.isReply = this.form.isReply;
-    } else if (this.pageType === 'pageSize') {
-      payload.pageSize = this.form.pageSize;
-    } else if (this.pageType === 'isTimeout') {
-      payload.isTimeout = this.form.isTimeout;
-      payload.timeToStart = this.form.timeToStart;
-      payload.timeToEnd = this.form.timeToEnd;
-    } else if (this.pageType === 'isCaptcha') {
-      payload.isCaptcha = this.form.isCaptcha;
-    } else if (this.pageType === 'isAdministratorSmsNotify') {
-      payload.isAdministratorSmsNotify = this.form.isAdministratorSmsNotify;
-      payload.administratorSmsNotifyTplId = this.form.administratorSmsNotifyTplId;
-      payload.administratorSmsNotifyKeys = this.administratorSmsNotifyKeys.join(',');
-      payload.administratorSmsNotifyMobile = this.form.administratorSmsNotifyMobile;
-    } else if (this.pageType === 'isAdministratorMailNotify') {
-      payload.isAdministratorMailNotify = this.form.isAdministratorMailNotify;
-      payload.administratorMailNotifyAddress = this.form.administratorMailNotifyAddress;
-    } else if (this.pageType === 'isUserSmsNotify') {
-      payload.isUserSmsNotify = this.form.isUserSmsNotify;
-      payload.userSmsNotifyTplId = this.form.userSmsNotifyTplId;
-      payload.userSmsNotifyKeys = this.userSmsNotifyKeys.join(',');
-      payload.userSmsNotifyMobileName = this.form.userSmsNotifyMobileName;
-    }
-
-    utils.loading(true);
-    $api.post($url, payload).then(function (response) {
+    utils.loading(this, true);
+    $api.post($url, this.form).then(function (response) {
       var res = response.data;
 
-      $this.pageType = 'list';
-      swal2({
-        toast: true,
-        type: 'success',
-        title: "设置保存成功",
-        showConfirmButton: false,
-        timer: 2000
-      });
+      utils.success('设置保存成功！');
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -107,11 +56,9 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
-    this.pageAlert = null;
-
-    this.$validator.validate().then(function (result) {
-      if (result) {
-        $this.submit();
+    this.$refs.form.validate(function(valid) {
+      if (valid) {
+        $this.apiSubmit();
       }
     });
   },
@@ -126,8 +73,6 @@ var methods = {
   btnNavClick: function() {
     location.href = utils.getRootUrl('form/' + this.navType, {
       siteId: this.siteId,
-      channelId: this.channelId,
-      contentId: this.contentId,
       formId: this.formId
     });
   }

@@ -2,33 +2,23 @@
 using System.Threading.Tasks;
 using SSCMS.Configuration;
 using SSCMS.Form.Models;
-using SSCMS.Form.Utils.Atom.Atom.AdditionalElements;
 using SSCMS.Models;
 
 namespace SSCMS.Form.Abstractions
 {
     public interface IFormManager
     {
-        Task<FormInfo> GetFormInfoByRequestAsync(int siteId, int channelId, int contentId, int formId);
-
         Task CreateDefaultStylesAsync(FormInfo formInfo);
 
-        List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles);
+        List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles, bool isReply);
 
         Task<DataInfo> GetDataInfoAsync(int dataId, int formId, List<TableStyle> styles);
 
         Task DeleteAsync(int siteId, int formId);
 
-        //Task TranslateAsync(int siteId, int channelId, int contentId, int targetSiteId, int targetChannelId,
-        //    int targetContentId);
-
         Task ImportFormAsync(int siteId, string directoryPath, bool overwrite);
 
         Task ExportFormAsync(int siteId, string directoryPath, int formId);
-
-        void AddDcElement(ScopedElementCollection collection, List<string> nameList, string content);
-
-        string GetDcElementContent(ScopedElementCollection additionalElements, List<string> nameList);
 
         Task<string> GetMailTemplateHtmlAsync();
 

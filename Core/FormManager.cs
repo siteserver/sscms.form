@@ -22,7 +22,7 @@ namespace SSCMS.Form.Core
 {
     public class FormManager : IFormManager
     {
-        public const string PluginId = "sscms.form";
+        private const string PluginId = "sscms.form";
         public const string PermissionsForms = "form_forms";
         public const string PermissionsTemplates = "form_templates";
 
@@ -43,40 +43,9 @@ namespace SSCMS.Form.Core
             _dataRepository = dataRepository;
         }
 
-        public async Task<FormInfo> GetFormInfoByRequestAsync(int siteId, int channelId, int contentId, int formId)
-        {
-            return formId > 0 ? await _formRepository.GetFormInfoAsync(siteId, formId) : await GetFormInfoOrCreateIfNotExistsAsync(siteId, channelId, contentId);
-        }
-
-        private async Task<FormInfo> GetFormInfoOrCreateIfNotExistsAsync(int siteId, int channelId, int contentId)
-        {
-            var formInfo = await _formRepository.GetFormInfoByContentIdAsync(siteId, channelId, contentId);
-
-            if (formInfo == null)
-            {
-                formInfo = new FormInfo
-                {
-                    SiteId = siteId,
-                    ChannelId = channelId,
-                    ContentId = contentId,
-                    Title = "默认表单",
-                    Description = string.Empty,
-                    IsReply = false,
-                    RepliedCount = 0,
-                    TotalCount = 0,
-                    ListAttributeNames = DefaultListAttributeNames
-                };
-                formInfo.Id = await _formRepository.InsertAsync(formInfo);
-
-                await CreateDefaultStylesAsync(formInfo);
-            }
-
-            return formInfo;
-        }
-
         public const string DefaultListAttributeNames = "Name,Mobile,Email,Content";
 
-        public List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles)
+        public List<ContentColumn> GetColumns(List<string> listAttributeNames, List<TableStyle> styles, bool isReply)
         {
             var columns = new List<ContentColumn>
             {
@@ -124,6 +93,25 @@ namespace SSCMS.Form.Core
                     IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.LastModifiedDate))
                 }
             });
+
+            if (isReply)
+            {
+                columns.AddRange(new List<ContentColumn>
+                {
+                    new ContentColumn
+                    {
+                        AttributeName = nameof(DataInfo.ReplyDate),
+                        DisplayName = "回复时间",
+                        IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.ReplyDate))
+                    },
+                    new ContentColumn
+                    {
+                        AttributeName = nameof(DataInfo.ReplyContent),
+                        DisplayName = "回复内容",
+                        IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.ReplyContent))
+                    }
+                });
+            }
 
             return columns;
         }
@@ -285,18 +273,9 @@ namespace SSCMS.Form.Core
             await _formRepository.DeleteAsync(siteId, formId);
         }
 
-        //public async Task TranslateAsync(int siteId, int channelId, int contentId, int targetSiteId, int targetChannelId,
-        //    int targetContentId)
-        //{
-        //    if (_pluginManager.IsEnabled(_plugin.PluginId, siteId, channelId))
-        //    {
-
-        //    }
-        //}
-
         private const string VersionFileName = "version.txt";
 
-        private bool IsHistoric(string directoryPath)
+        private static bool IsHistoric(string directoryPath)
         {
             if (!FileUtils.IsFileExists(PathUtils.Combine(directoryPath, VersionFileName))) return true;
 
@@ -483,7 +462,7 @@ namespace SSCMS.Form.Core
                 SetValue(feed.AdditionalElements, tableColumn, formInfo);
             }
 
-            var styleDirectoryPath = PathUtils.Combine(directoryPath, formInfo.Id.ToString());
+            //var styleDirectoryPath = PathUtils.Combine(directoryPath, formInfo.Id.ToString());
 
             var relatedIdentities = GetRelatedIdentities(formInfo.Id);
 
@@ -503,52 +482,6 @@ namespace SSCMS.Form.Core
             await FileUtils.WriteTextAsync(PathUtils.Combine(directoryPath, VersionFileName), plugin.Version);
         }
 
-        //private AtomFeed ExportFieldInfo(FieldInfo style)
-        //{
-        //    var feed = GetEmptyFeed();
-
-        //    foreach (var tableColumn in _fieldRepository.TableColumns)
-        //    {
-        //        SetValue(feed.AdditionalElements, tableColumn, style);
-        //    }
-
-        //    return feed;
-        //}
-
-        //private async Task ExportFieldsAsync(int formId, string styleDirectoryPath)
-        //{
-
-        //    DirectoryUtils.DeleteDirectoryIfExists(styleDirectoryPath);
-        //    DirectoryUtils.CreateDirectoryIfNotExists(styleDirectoryPath);
-
-        //    var styleList = await _fieldRepository.GetFieldInfoListAsync(formId);
-        //    foreach (var style in styleList)
-        //    {
-        //        var filePath = PathUtils.Combine(styleDirectoryPath, style.Id + ".xml");
-        //        var feed = ExportFieldInfo(style);
-        //        if (style.Items != null && style.Items.Count > 0)
-        //        {
-        //            foreach (var itemInfo in style.Items)
-        //            {
-        //                var entry = ExportTableStyleItemInfo(itemInfo);
-        //                feed.Entries.Add(entry);
-        //            }
-        //        }
-        //        feed.Save(filePath);
-        //    }
-        //}
-
-        //private AtomEntry ExportTableStyleItemInfo(FieldItemInfo styleItemInfo)
-        //{
-        //    var entry = GetEmptyEntry();
-
-        //    foreach (var tableColumn in _fieldItemRepository.TableColumns)
-        //    {
-        //        SetValue(entry.AdditionalElements, tableColumn, styleItemInfo);
-        //    }
-
-        //    return entry;
-        //}
 
         private const string Prefix = "SiteServer_";
 
@@ -570,40 +503,11 @@ namespace SSCMS.Form.Core
             }
         }
 
-        public void AddDcElement(ScopedElementCollection collection, List<string> nameList, string content)
-        {
-            if (!string.IsNullOrEmpty(content))
-            {
-                foreach (var name in nameList)
-                {
-                    collection.Add(new DcElement(Prefix + name, ToXmlContent(content)));
-                }
-            }
-        }
-
-        public string GetDcElementContent(ScopedElementCollection additionalElements, List<string> nameList)
-        {
-            return GetDcElementContent(additionalElements, nameList, "");
-        }
-
         private string GetDcElementContent(ScopedElementCollection additionalElements, string name, string defaultContent = "")
         {
             var localName = Prefix + name;
             var element = additionalElements.FindScopedElementByLocalName(localName);
             return element != null ? element.Content : defaultContent;
-        }
-
-        private string GetDcElementContent(ScopedElementCollection additionalElements, List<string> nameList, string defaultContent)
-        {
-            foreach (var name in nameList)
-            {
-                var localName = Prefix + name;
-                var element = additionalElements.FindScopedElementByLocalName(localName);
-                if (element == null) continue;
-
-                return element.Content;
-            }
-            return defaultContent;
         }
 
         private NameValueCollection GetDcElementNameValueCollection(ScopedElementCollection additionalElements)

@@ -1,6 +1,6 @@
 $apiUrl = utils.getQueryString('apiUrl') || $formConfigApiUrl;
 $rootUrl = "/";
-$token = localStorage.getItem(USER_ACCESS_TOKEN_NAME);
+$token = localStorage.getItem(ACCESS_TOKEN_NAME);
 
 var $api = axios.create({
   baseURL: $apiUrl,

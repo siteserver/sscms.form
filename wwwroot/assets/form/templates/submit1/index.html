@@ -271,7 +271,12 @@
         </template>
 
         <el-form-item v-if="isCaptcha" label="验证码" prop="captcha" :rules="{ required: true, message: '请输入验证码' }">
-          <el-input v-model="form.captcha" placeholder="请输入验证码"></el-input>
+          <el-col :span="6">
+            <el-input v-model="form.captcha" placeholder="请输入验证码"></el-input>
+          </el-col>
+          <el-col :span="18">
+            <img :src="captchaUrl" v-on:click="apiLoadCaptcha" style="width: 105px; height: 38px; margin-left: 5px;" />
+          </el-col>
         </el-form-item>
         
       </el-form>

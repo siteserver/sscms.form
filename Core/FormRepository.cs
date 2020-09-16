@@ -29,12 +29,9 @@ namespace SSCMS.Form.Core
         public async Task<int> InsertAsync(FormInfo formInfo)
         {
             if (formInfo.SiteId == 0) return 0;
-            if (formInfo.ChannelId == 0 && formInfo.ContentId == 0 && string.IsNullOrEmpty(formInfo.Title)) return 0;
+            if (string.IsNullOrEmpty(formInfo.Title)) return 0;
 
-            if (formInfo.ContentId == 0)
-            {
-                formInfo.Taxis = await GetMaxTaxisAsync(formInfo.SiteId) + 1;
-            }
+            formInfo.Taxis = await GetMaxTaxisAsync(formInfo.SiteId) + 1;
 
             formInfo.Id = await _repository.InsertAsync(formInfo, Q.CachingRemove(GetCacheKey(formInfo.SiteId)));
 
@@ -115,13 +112,17 @@ namespace SSCMS.Form.Core
             );
         }
 
-        public async Task<IList<FormInfo>> GetFormInfoListAsync(int siteId)
+        public async Task<List<FormInfo>> GetFormInfoListAsync(int siteId)
         {
-            return await _repository.GetAllAsync(Q
+            var formInfoList = await _repository.GetAllAsync(Q
                 .Where(nameof(FormInfo.SiteId), siteId)
                 .OrderBy(nameof(FormInfo.Taxis), nameof(FormInfo.Id))
                 .CachingGet(GetCacheKey(siteId))
             );
+
+            return formInfoList
+                .OrderBy(formInfo => formInfo.Taxis == 0 ? int.MaxValue : formInfo.Taxis)
+                .ToList();
         }
 
         public async Task<string> GetImportTitleAsync(int siteId, string title)
@@ -157,27 +158,11 @@ namespace SSCMS.Form.Core
             return importTitle;
         }
 
-        public async Task<List<FormInfo>> GetFormInfoListAsync(int siteId, int channelId)
-        {
-            var formInfoList = await GetFormInfoListAsync(siteId);
-
-            return formInfoList
-                .Where(formInfo => formInfo.ChannelId == channelId)
-                .OrderBy(formInfo => formInfo.Taxis == 0 ? int.MaxValue : formInfo.Taxis)
-                .ToList();
-        }
-
         public async Task<FormInfo> GetFormInfoAsync(int siteId, int id)
         {
             var formInfoList = await GetFormInfoListAsync(siteId);
 
             return formInfoList.FirstOrDefault(x => x.Id == id);
-        }
-
-        public async Task<FormInfo> GetFormInfoByContentIdAsync(int siteId, int channelId, int contentId)
-        {
-            var formInfoList = await GetFormInfoListAsync(siteId);
-            return formInfoList.FirstOrDefault(x => x.ChannelId == channelId && x.ContentId == contentId);
         }
 
         public async Task<FormInfo> GetFormInfoByTitleAsync(int siteId, string title)
@@ -201,22 +186,6 @@ namespace SSCMS.Form.Core
             allAttributeNames.Add(nameof(DataInfo.LastModifiedDate));
 
             return allAttributeNames;
-        }
-
-        public string GetFormTitle(FormInfo formInfo)
-        {
-            var text = "表单管理 (0)";
-            if (formInfo == null) return text;
-
-            text = $"{(formInfo.ContentId > 0 ? "表单管理" : formInfo.Title)} ({formInfo.TotalCount})";
-            if (!formInfo.IsReply) return text;
-
-            if (formInfo.TotalCount - formInfo.RepliedCount > 0)
-            {
-                text = $@"<span class=""text-danger"">{text}</span>";
-            }
-
-            return text;
         }
     }
 }
