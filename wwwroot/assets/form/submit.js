@@ -44,7 +44,7 @@ var methods = {
     style.value = [];
   },
 
-  apiLoadCaptcha: function () {
+  apiCaptchaLoad: function () {
     var $this = this;
 
     utils.loading(this, true);
@@ -87,7 +87,7 @@ var methods = {
           });
           editor.attributeName = style.attributeName;
           editor.ready(function () {
-            editor.addListener("contentChange", function () {
+            this.addListener("contentChange", function () {
               $this.form[this.attributeName] = this.getContent();
             });
           });
@@ -112,7 +112,7 @@ var methods = {
       $this.description = res.description;
       $this.isCaptcha = res.isCaptcha;
       if ($this.isCaptcha) {
-        $this.apiLoadCaptcha();
+        $this.apiCaptchaLoad();
       }
       $this.styles = res.styles;
       $this.form = $this.getForm(res.styles, _.assign({

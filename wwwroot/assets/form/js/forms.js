@@ -171,7 +171,7 @@ var methods = {
     utils.loading(this, false);
 
     utils.success('表单导入成功');
-    location.reload(true);
+    location.reload();
   },
 
   uploadError: function(err) {

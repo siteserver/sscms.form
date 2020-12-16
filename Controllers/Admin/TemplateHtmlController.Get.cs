@@ -14,7 +14,7 @@ namespace SSCMS.Form.Controllers.Admin
                 return Unauthorized();
 
             var templateInfo = _formManager.GetTemplateInfo(request.Name);
-            var html = await _formManager.GetTemplateHtmlAsync(templateInfo);
+            var html = _formManager.GetTemplateHtml(templateInfo);
 
             var isSystem = templateInfo.Publisher == "sscms";
             if (isSystem)

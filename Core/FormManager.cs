@@ -26,14 +26,14 @@ namespace SSCMS.Form.Core
         public const string PermissionsForms = "form_forms";
         public const string PermissionsTemplates = "form_templates";
 
-        private readonly ICacheManager<string> _cacheManager;
+        private readonly ICacheManager _cacheManager;
         private readonly IPathManager _pathManager;
         private readonly IPluginManager _pluginManager;
         private readonly IFormRepository _formRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
         private readonly IDataRepository _dataRepository;
 
-        public FormManager(ICacheManager<string> cacheManager, IPathManager pathManager, IPluginManager pluginManager, IFormRepository formRepository, ITableStyleRepository tableStyleRepository, IDataRepository dataRepository)
+        public FormManager(ICacheManager cacheManager, IPathManager pathManager, IPluginManager pluginManager, IFormRepository formRepository, ITableStyleRepository tableStyleRepository, IDataRepository dataRepository)
         {
             _cacheManager = cacheManager;
             _pathManager = pathManager;
@@ -614,7 +614,7 @@ namespace SSCMS.Form.Core
         {
             var directoryPath = GetMailTemplatesDirectoryPath();
             var htmlPath = PathUtils.Combine(directoryPath, "template.html");
-            if (_cacheManager.Exists(htmlPath)) return _cacheManager.Get(htmlPath);
+            if (_cacheManager.Exists(htmlPath)) return _cacheManager.Get<string>(htmlPath);
 
             var html = await FileUtils.ReadTextAsync(htmlPath);
 
@@ -626,7 +626,7 @@ namespace SSCMS.Form.Core
         {
             var directoryPath = GetMailTemplatesDirectoryPath();
             var htmlPath = PathUtils.Combine(directoryPath, "list.html");
-            if (_cacheManager.Exists(htmlPath)) return _cacheManager.Get(htmlPath);
+            if (_cacheManager.Exists(htmlPath)) return _cacheManager.Get<string>(htmlPath);
 
             var html = await FileUtils.ReadTextAsync(htmlPath);
 
@@ -842,11 +842,11 @@ namespace SSCMS.Form.Core
             FileUtils.WriteText(configPath, configJson);
         }
 
-        public async Task<string> GetTemplateHtmlAsync(TemplateInfo templateInfo)
+        public string GetTemplateHtml(TemplateInfo templateInfo)
         {
             var directoryPath = GetTemplatesDirectoryPath();
             var htmlPath = PathUtils.Combine(directoryPath, templateInfo.Name, templateInfo.Main);
-            return await _pathManager.GetContentByFilePathAsync(htmlPath);
+            return _pathManager.GetContentByFilePath(htmlPath);
         }
 
         public void SetTemplateHtml(TemplateInfo templateInfo, string html)

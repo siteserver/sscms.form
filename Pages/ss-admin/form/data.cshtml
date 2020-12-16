@@ -97,7 +97,7 @@
           <template slot-scope="scope">
             <el-link :underline="false" v-if="isReply" v-on:click="btnReplyClick(scope.row.id)" type="primary">回复</el-link>
             <el-link :underline="false" v-on:click="btnEditClick(scope.row.id)" type="primary">编辑</el-link>
-            <el-link :underline="false" v-if="!scope.row.isSystem" type="danger" v-on:click="btnDeleteClick(scope.row.id)">删除</el-link>
+            <el-link :underline="false" type="danger" v-on:click="btnDeleteClick(scope.row.id)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>

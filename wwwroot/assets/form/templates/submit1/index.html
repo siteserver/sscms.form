@@ -275,7 +275,7 @@
             <el-input v-model="form.captcha" placeholder="请输入验证码"></el-input>
           </el-col>
           <el-col :span="18">
-            <img :src="captchaUrl" v-on:click="apiLoadCaptcha" style="width: 105px; height: 38px; margin-left: 5px;" />
+            <img :src="captchaUrl" v-on:click="apiCaptchaLoad" style="width: 105px; height: 38px; margin-left: 5px;" />
           </el-col>
         </el-form-item>
         
@@ -319,5 +319,6 @@
 <script src="/sitefiles/assets/lib/sweetalert2-7.28.4.all.min.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/lib/elementui/index.js"></script>
+<script src="/sitefiles/assets/js/plugin.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/js/utils.js" type="text/javascript"></script>
 <script src="/assets/form/submit.js" type="text/javascript"></script>

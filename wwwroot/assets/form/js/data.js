@@ -149,27 +149,6 @@ var methods = {
     });
   },
 
-  btnVisibleClick: function (attributeName) {
-    var $this = this;
-    event.stopPropagation();
-    event.preventDefault();
-
-    utils.loading(true);
-    $api.post($urlActionsVisible, {
-      siteId: this.siteId,
-      formId: this.formId,
-      attributeName: attributeName
-    }).then(function (response) {
-      var res = response.data;
-
-      $this.listAttributeNames = res.value;
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-    });
-  },
-
   getAttributeText: function (attributeName) {
     var column = this.columns.find(function (x) {
       return x.attributeName === attributeName;
