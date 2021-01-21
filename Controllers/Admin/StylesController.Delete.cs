@@ -9,11 +9,8 @@ namespace SSCMS.Form.Controllers.Admin
         [HttpDelete, Route(Route)]
         public async Task<ActionResult<DeleteResult>> Delete([FromBody] DeleteRequest request)
         {
-            if (!await _authManager.HasSitePermissionsAsync(request.SiteId,
-                FormManager.PermissionsForms))
-            {
+            if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
-            }
 
             var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();

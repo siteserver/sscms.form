@@ -24,6 +24,9 @@
           <el-button size="mini" plain type="primary" icon="el-icon-circle-plus-outline" v-on:click="btnAddClick">
             添 加
           </el-button>
+          <el-button size="mini" plain type="primary" icon="el-icon-upload" style="margin-left: 0;" v-on:click="btnImportClick">
+            导 入
+          </el-button>
           <el-button size="mini" plain type="primary" icon="el-icon-download" style="margin-left: 0;" v-on:click="btnExportClick">
             导 出
           </el-button>
@@ -119,6 +122,41 @@
     </el-main>
   </el-container>
 </el-container>
+
+<el-drawer
+  title="导入表单数据"
+  ref="uploadPanel"
+  :visible.sync="uploadPanel"
+  destroy-on-close
+  direction="rtl"
+  size="50%">
+  <div class="drawer__content">
+    <br />
+    <el-form ref="uploadForm" label-width="200px">
+      <el-upload
+        :drag="true"
+        :limit="1"
+        :action="urlUpload"
+        :auto-upload="true"
+        :headers="{Authorization: 'Bearer ' + $token}"
+        :file-list="uploadList"
+        :before-upload="uploadBefore"
+        :on-progress="uploadProgress"
+        :on-success="uploadSuccess"
+        :on-error="uploadError"
+        :multiple="false">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">
+          <el-link :underline="false" type="primary" href="/assets/form/表单数据导入模板.xlsx" target="_blank">
+            <i class="el-icon-download"></i>
+            下载导入模版
+          </el-link>
+        </div>
+      </el-upload>
+    </el-form>
+  </div>
+</el-drawer>
 
 @section Scripts{
   <script src="/assets/form/js/data.js" type="text/javascript"></script>

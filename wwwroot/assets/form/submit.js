@@ -78,13 +78,10 @@ var methods = {
     var form =  _.assign({}, value);
     for (var i = 0; i < styles.length; i++) {
       var style = styles[i];
-      var name = _.lowerFirst(style.attributeName);
+      var name = utils.toCamelCase(style.attributeName);
       if (style.inputType === 'TextEditor') {
         setTimeout(function () {
-          var editor = UE.getEditor(style.attributeName, {
-            allowDivTransToP: false,
-            maximumWords: 99999999
-          });
+          var editor = utils.getEditor(style.attributeName);
           editor.attributeName = style.attributeName;
           editor.ready(function () {
             this.addListener("contentChange", function () {

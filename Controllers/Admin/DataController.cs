@@ -17,6 +17,7 @@ namespace SSCMS.Form.Controllers.Admin
         private const string Route = "form/data";
         private const string ActionsExport = "form/data/actions/export";
         private const string ActionsColumns = "form/data/actions/columns";
+        private const string RouteImport = "form/data/actions/import";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
@@ -66,6 +67,12 @@ namespace SSCMS.Form.Controllers.Admin
         public class ColumnsRequest : FormRequest
         {
             public List<string> AttributeNames { get; set; }
+        }
+
+        public class ImportRequest
+        {
+            public int SiteId { get; set; }
+            public int FormId { get; set; }
         }
     }
 }

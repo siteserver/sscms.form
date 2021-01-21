@@ -57,52 +57,58 @@
           <el-radio v-model="form.isCaptcha" :label="false">不显示</el-radio>
         </el-form-item>
         <el-form-item label="向管理员发送短信通知">
-          <el-radio v-model="form.isAdministratorSmsNotify" :label="true">发送短信通知</el-radio>
-          <el-radio v-model="form.isAdministratorSmsNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用短信发送后将自动为每一条新增提交发送短信给指定手机</div>
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isAdministratorSmsNotify" :label="true">发送短信通知</el-radio>
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isAdministratorSmsNotify" :label="false">不发送</el-radio>
+          <div class="tips">启用短信发送后将自动为每一条新增提交发送短信给指定手机（需要插件支持）</div>
         </el-form-item>
-        <el-form-item v-if="form.isAdministratorSmsNotify" label="发送通知短信模板Id" prop="administratorSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">
-          <el-input v-model="form.administratorSmsNotifyTplId"></el-input>
-          <div class="tips">需进入短信供应商模板管理界面，添加通知类短信模板并获取模板Id</div>
-        </el-form-item>
-        <el-form-item v-if="form.isAdministratorSmsNotify" label="短信模板包含变量">
-          <el-checkbox-group v-model="administratorSmsNotifyKeys">
-            <el-checkbox v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-checkbox>
-          </el-checkbox-group>
-          <div class="tips">请勾选短信模板文字中包含的变量，请确保变量名大小写一致</div>
-        </el-form-item>
-        <el-form-item v-if="form.isAdministratorSmsNotify" label="管理员接受短信通知手机号" prop="administratorSmsNotifyMobile" :rules="{ required: true, message: '请输入管理员接受短信通知手机号' }">
-          <el-input v-model="form.administratorSmsNotifyMobile"></el-input>
-        </el-form-item>
+        <template v-if="form.isAdministratorSmsNotify">
+          <el-form-item  label="发送通知短信模板Id" prop="administratorSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">
+            <el-input v-model="form.administratorSmsNotifyTplId"></el-input>
+            <div class="tips">需进入短信供应商模板管理界面，添加通知类短信模板并获取模板Id</div>
+          </el-form-item>
+          <el-form-item label="短信模板包含变量">
+            <el-checkbox-group v-model="administratorSmsNotifyKeys">
+              <el-checkbox v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-checkbox>
+            </el-checkbox-group>
+            <div class="tips">请勾选短信模板文字中包含的变量，请确保变量名大小写一致</div>
+          </el-form-item>
+          <el-form-item label="管理员接受短信通知手机号" prop="administratorSmsNotifyMobile" :rules="{ required: true, message: '请输入管理员接受短信通知手机号' }">
+            <el-input v-model="form.administratorSmsNotifyMobile"></el-input>
+          </el-form-item>
+        </template>
         <el-form-item label="向管理员发送邮件通知">
-          <el-radio v-model="form.isAdministratorMailNotify" :label="true">发送邮件通知</el-radio>
-          <el-radio v-model="form.isAdministratorMailNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱</div>
+          <el-radio :disabled="!isMailEnabled" v-model="form.isAdministratorMailNotify" :label="true">发送邮件通知</el-radio>
+          <el-radio :disabled="!isMailEnabled" v-model="form.isAdministratorMailNotify" :label="false">不发送</el-radio>
+          <div class="tips">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱（需要插件支持）</div>
         </el-form-item>
-        <el-form-item v-if="form.isAdministratorMailNotify" label="管理员接受邮件通知邮箱" prop="administratorMailNotifyAddress" :rules="{ required: true, message: '请输入管理员接受邮件通知邮箱' }">
-          <el-input v-model="form.administratorMailNotifyAddress"></el-input>
-        </el-form-item>
+        <template v-if="form.isAdministratorMailNotify">
+          <el-form-item label="管理员接受邮件通知邮箱" prop="administratorMailNotifyAddress" :rules="{ required: true, message: '请输入管理员接受邮件通知邮箱' }">
+            <el-input v-model="form.administratorMailNotifyAddress"></el-input>
+          </el-form-item>
+        </template>
         <el-form-item label="向用户发送短信通知">
-          <el-radio v-model="form.isUserSmsNotify" :label="true">发送短信通知</el-radio>
-          <el-radio v-model="form.isUserSmsNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用短信发送后将自动向信息提交人发送提交成功短信</div>
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isUserSmsNotify" :label="true">发送短信通知</el-radio>
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isUserSmsNotify" :label="false">不发送</el-radio>
+          <div class="tips">启用短信发送后将自动向信息提交人发送提交成功短信（需要插件支持）</div>
         </el-form-item>
-        <el-form-item v-if="form.isUserSmsNotify" label="发送通知短信模板Id" prop="userSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">
-          <el-input v-model="form.userSmsNotifyTplId"></el-input>
-          <div class="tips">需进入短信供应商模板管理界面，添加通知类短信模板并获取模板Id</div>
-        </el-form-item>
-        <el-form-item v-if="form.isUserSmsNotify" label="短信模板包含变量">
-          <el-checkbox-group v-model="userSmsNotifyKeys">
-            <el-checkbox v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-checkbox>
-          </el-checkbox-group>
-          <div class="tips">请勾选短信模板文字中包含的变量，请确保变量名大小写一致</div>
-        </el-form-item>
-        <el-form-item v-if="form.isUserSmsNotify" label="手机号码字段">
-          <el-radio-group v-model="form.userSmsNotifyMobileName">
-            <el-radio v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-radio>
-          </el-radio-group>
-          <div class="tips">请选择表单字段中设置的手机号码字段，信息提交后将向此发送短信</div>
-        </el-form-item>
+        <template v-if="form.isUserSmsNotify">
+          <el-form-item label="发送通知短信模板Id" prop="userSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">
+            <el-input v-model="form.userSmsNotifyTplId"></el-input>
+            <div class="tips">需进入短信供应商模板管理界面，添加通知类短信模板并获取模板Id</div>
+          </el-form-item>
+          <el-form-item label="短信模板包含变量">
+            <el-checkbox-group v-model="userSmsNotifyKeys">
+              <el-checkbox v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-checkbox>
+            </el-checkbox-group>
+            <div class="tips">请勾选短信模板文字中包含的变量，请确保变量名大小写一致</div>
+          </el-form-item>
+          <el-form-item label="手机号码字段">
+            <el-radio-group v-model="form.userSmsNotifyMobileName">
+              <el-radio v-for="attributeName in attributeNames" :key="attributeName" :label="attributeName">{{getAttributeText(attributeName)}}</el-radio>
+            </el-radio-group>
+            <div class="tips">请选择表单字段中设置的手机号码字段，信息提交后将向此发送短信</div>
+          </el-form-item>
+        </template>
       </el-form>
 
       <el-divider></el-divider>

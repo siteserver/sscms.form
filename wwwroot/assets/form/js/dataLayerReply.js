@@ -76,7 +76,7 @@ var methods = {
   },
 
   getAttributeValue: function (attributeName) {
-    return this.dataInfo[_.lowerFirst(attributeName)];
+    return this.dataInfo[utils.toCamelCase(attributeName)];
   },
 
   btnCancelClick: function () {

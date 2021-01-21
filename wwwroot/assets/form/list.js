@@ -70,7 +70,7 @@ var methods = {
   },
 
   getAttributeValue: function (item, attributeName) {
-    return item[_.lowerFirst(attributeName)];
+    return item[utils.toCamelCase(attributeName)];
   },
 
   largeImage: function(item, attributeName) {

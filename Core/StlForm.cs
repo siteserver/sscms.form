@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
+using SSCMS.Configuration;
 using SSCMS.Form.Abstractions;
 using SSCMS.Parse;
 using SSCMS.Plugins;
+using SSCMS.Repositories;
 using SSCMS.Services;
 using SSCMS.Utils;
 
@@ -15,12 +17,14 @@ namespace SSCMS.Form.Core
         private const string AttributeType = "type";
 
         private readonly IPathManager _pathManager;
+        private readonly ISiteRepository _siteRepository;
         private readonly IFormRepository _formRepository;
 
-        public StlForm(IPathManager pathManager, IFormRepository formRepository)
+        public StlForm(IPathManager pathManager, ISiteRepository siteRepository, IFormRepository formRepository)
         {
             _pathManager = pathManager;
             _formRepository = formRepository;
+            _siteRepository = siteRepository;
         }
 
         public string ElementName => "stl:form";
@@ -55,14 +59,15 @@ namespace SSCMS.Form.Core
                 }
             }
 
-            if (formInfo == null) return string.Empty;
+            var site = await _siteRepository.GetAsync(context.SiteId);
+            if (formInfo == null || site == null) return string.Empty;
 
-            var apiUrl = _pathManager.GetApiUrl();
+            var apiUrl = _pathManager.GetApiHostUrl(site, Constants.ApiPrefix);
             if (string.IsNullOrEmpty(context.StlInnerHtml))
             {
                 var elementId = $"iframe_{StringUtils.GetShortGuid(false)}";
-                var libUrl = _pathManager.GetRootUrl("assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
-                var pageUrl = _pathManager.GetRootUrl($"assets/form/templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
+                var libUrl = _pathManager.GetApiHostUrl(site, "assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
+                var pageUrl = _pathManager.GetApiHostUrl(site, $"assets/form/templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
 
                 return $@"
 <iframe id=""{elementId}"" frameborder=""0"" scrolling=""no"" src=""{pageUrl}"" style=""width: 1px;min-width: 100%;""></iframe>

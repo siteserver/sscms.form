@@ -11,11 +11,8 @@ namespace SSCMS.Form.Controllers.Admin
         [HttpPost, Route(RouteExport)]
         public async Task<ActionResult<StringResult>> Export([FromBody] FormRequest request)
         {
-            if (!await _authManager.HasSitePermissionsAsync(request.SiteId,
-                FormManager.PermissionsForms))
-            {
+            if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
-            }
 
             var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();

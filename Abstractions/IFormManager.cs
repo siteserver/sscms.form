@@ -20,11 +20,7 @@ namespace SSCMS.Form.Abstractions
 
         Task ExportFormAsync(int siteId, string directoryPath, int formId);
 
-        Task<string> GetMailTemplateHtmlAsync();
-
-        Task<string> GetMailListHtmlAsync();
-
-        void SendNotify(FormInfo formInfo, List<TableStyle> styles, DataInfo dataInfo);
+        Task SendNotifyAsync(FormInfo formInfo, List<TableStyle> styles, DataInfo dataInfo);
 
         List<TemplateInfo> GetTemplateInfoList(string type);
 

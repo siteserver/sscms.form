@@ -8,7 +8,9 @@ var data = utils.init({
   styleList: [],
   attributeNames: null,
   administratorSmsNotifyKeys: null,
-  userSmsNotifyKeys: null
+  userSmsNotifyKeys: null,
+  isSmsEnabled: null,
+  isMailEnabled: null
 });
 
 var methods = {
@@ -32,6 +34,8 @@ var methods = {
       $this.attributeNames = res.attributeNames;
       $this.administratorSmsNotifyKeys = res.administratorSmsNotifyKeys;
       $this.userSmsNotifyKeys = res.userSmsNotifyKeys;
+      $this.isSmsEnabled = res.isSmsEnabled;
+      $this.isMailEnabled = res.isMailEnabled;
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

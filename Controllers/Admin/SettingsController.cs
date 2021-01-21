@@ -18,12 +18,16 @@ namespace SSCMS.Form.Controllers.Admin
         private const string Route = "form/settings";
 
         private readonly IAuthManager _authManager;
+        private readonly ISmsManager _smsManager;
+        private readonly IMailManager _mailManager;
         private readonly IFormManager _formManager;
         private readonly IFormRepository _formRepository;
 
-        public SettingsController(IAuthManager authManager, IFormManager formManager, IFormRepository formRepository)
+        public SettingsController(IAuthManager authManager, ISmsManager smsManager, IMailManager mailManager, IFormManager formManager, IFormRepository formRepository)
         {
             _authManager = authManager;
+            _smsManager = smsManager;
+            _mailManager = mailManager;
             _formManager = formManager;
             _formRepository = formRepository;
         }
@@ -35,6 +39,8 @@ namespace SSCMS.Form.Controllers.Admin
             public List<string> AttributeNames { get; set; }
             public List<string> AdministratorSmsNotifyKeys { get; set; }
             public List<string> UserSmsNotifyKeys { get; set; }
+            public bool IsSmsEnabled { get; set; }
+            public bool IsMailEnabled { get; set; }
         }
 
         public class SubmitRequest : FormRequest

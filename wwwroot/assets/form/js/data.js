@@ -1,6 +1,6 @@
 ﻿var $url = '/form/data';
-var $urlActionsExport = '/form/data/actions/export';
-var $urlActionsColumns = '/form/data/actions/columns';
+var $urlExport = '/form/data/actions/export';
+var $urlColumns = '/form/data/actions/columns';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -15,6 +15,9 @@ var data = utils.init({
   page: 1,
   items: [],
   columns: null,
+  uploadPanel: false,
+  uploadLoading: false,
+  uploadList: []
 });
 
 var methods = {
@@ -73,7 +76,7 @@ var methods = {
   apiColumns: function(attributeNames) {
     var $this = this;
 
-    $api.post($urlActionsColumns, {
+    $api.post($urlColumns, {
       siteId: this.siteId,
       formId: this.formId,
       attributeNames: attributeNames
@@ -129,11 +132,39 @@ var methods = {
     });
   },
 
+  btnImportClick: function() {
+    this.uploadPanel = true;
+  },
+
+  uploadBefore(file) {
+    var isExcel = file.name.indexOf('.xlsx', file.name.length - '.xlsx'.length) !== -1;
+    if (!isExcel) {
+      utils.error('表单数据导入文件只能是 Excel 格式!');
+    }
+    return isExcel;
+  },
+
+  uploadProgress: function() {
+    utils.loading(this, true);
+  },
+
+  uploadSuccess: function(res, file) {
+    this.uploadPanel = false;
+    utils.success('成功导入表单数据！');
+    this.apiGet();
+  },
+
+  uploadError: function(err) {
+    utils.loading(this, false);
+    var error = JSON.parse(err.message);
+    utils.error(error.message);
+  },
+
   btnExportClick: function () {
     var $this = this;
     utils.loading(true);
 
-    $api.post($urlActionsExport, {
+    $api.post($urlExport, {
       siteId: this.siteId,
       formId: this.formId
     }).then(function (response) {
@@ -163,7 +194,7 @@ var methods = {
   },
 
   getAttributeValue: function (item, attributeName) {
-    return item[_.lowerFirst(attributeName)];
+    return item[utils.toCamelCase(attributeName)];
   },
 
   largeImage: function(item, attributeName) {
@@ -192,6 +223,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    this.urlUpload = $apiUrl + '/form/data/actions/import?siteId=' + this.siteId + '&formId=' + this.formId;
     this.apiGet(1);
   }
 });

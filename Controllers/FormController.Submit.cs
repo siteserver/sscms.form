@@ -28,7 +28,7 @@ namespace SSCMS.Form.Controllers
             request.FormId = formId;
 
             request.Id = await _dataRepository.InsertAsync(formInfo, request);
-            _formManager.SendNotify(formInfo, styles, request);
+            await _formManager.SendNotifyAsync(formInfo, styles, request);
 
             return request;
         }

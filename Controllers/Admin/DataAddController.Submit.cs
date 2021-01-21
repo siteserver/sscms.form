@@ -45,7 +45,7 @@ namespace SSCMS.Form.Controllers.Admin
             if (request.Id == 0)
             {
                 request.Id = await _dataRepository.InsertAsync(formInfo, request);
-                _formManager.SendNotify(formInfo, styles, request);
+                await _formManager.SendNotifyAsync(formInfo, styles, request);
             }
             else
             {

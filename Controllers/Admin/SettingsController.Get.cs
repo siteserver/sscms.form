@@ -26,13 +26,18 @@ namespace SSCMS.Form.Controllers.Admin
             var administratorSmsNotifyKeys = ListUtils.GetStringList(formInfo.AdministratorSmsNotifyKeys);
             var userSmsNotifyKeys = ListUtils.GetStringList(formInfo.UserSmsNotifyKeys);
 
+            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            var isMailEnabled = await _mailManager.IsEnabledAsync();
+
             return new GetResult
             {
                 Form = formInfo,
                 Styles = styles,
                 AttributeNames = attributeNames,
                 AdministratorSmsNotifyKeys = administratorSmsNotifyKeys,
-                UserSmsNotifyKeys = userSmsNotifyKeys
+                UserSmsNotifyKeys = userSmsNotifyKeys,
+                IsSmsEnabled = isSmsEnabled,
+                IsMailEnabled = isMailEnabled
             };
         }
     }

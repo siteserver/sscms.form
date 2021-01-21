@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SSCMS.Configuration;
 using SSCMS.Dto;
 using SSCMS.Form.Core;
 using SSCMS.Form.Utils;
@@ -15,11 +14,8 @@ namespace SSCMS.Form.Controllers.Admin
         [HttpPost, Route(RouteImport)]
         public async Task<ActionResult<BoolResult>> Import([FromQuery] FormRequest request, [FromForm] IFormFile file)
         {
-            if (!await _authManager.HasSitePermissionsAsync(request.SiteId,
-                Types.SitePermissions.SettingsStyleSite))
-            {
+            if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
-            }
 
             var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
@@ -44,7 +40,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             var relatedIdentities = _formManager.GetRelatedIdentities(formInfo.Id);
 
-            var directoryPath = await _pathManager.ImportStylesAsync(FormUtils.TableNameData, relatedIdentities, filePath);
+            var directoryPath = await _pathManager.ImportStylesByZipFileAsync(FormUtils.TableNameData, relatedIdentities, filePath);
 
             FileUtils.DeleteFileIfExists(filePath);
             DirectoryUtils.DeleteDirectoryIfExists(directoryPath);
