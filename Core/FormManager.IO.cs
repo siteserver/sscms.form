@@ -190,6 +190,7 @@ namespace SSCMS.Form.Core
         {
             var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);
             var filePath = PathUtils.Combine(directoryPath, formInfo.Id + ".xml");
+            DirectoryUtils.CreateDirectoryIfNotExists(filePath);
 
             var feed = GetEmptyFeed();
 
