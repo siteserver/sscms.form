@@ -82,6 +82,11 @@
           <div class="tips">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱（需要插件支持）</div>
         </el-form-item>
         <template v-if="form.isAdministratorMailNotify">
+          <el-form-item label="通知邮件标题" prop="administratorMailTitle">
+            <el-input v-model="form.administratorMailTitle"></el-input>
+          </el-form-item>
+        </template>
+        <template v-if="form.isAdministratorMailNotify">
           <el-form-item label="管理员接受邮件通知邮箱" prop="administratorMailNotifyAddress" :rules="{ required: true, message: '请输入管理员接受邮件通知邮箱' }">
             <el-input v-model="form.administratorMailNotifyAddress"></el-input>
           </el-form-item>

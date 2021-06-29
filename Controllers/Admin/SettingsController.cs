@@ -60,6 +60,7 @@ namespace SSCMS.Form.Controllers.Admin
             public string AdministratorSmsNotifyKeys { get; set; }
             public string AdministratorSmsNotifyMobile { get; set; }
             public bool IsAdministratorMailNotify { get; set; }
+            public string AdministratorMailTitle { get; set; }
             public string AdministratorMailNotifyAddress { get; set; }
             public bool IsUserSmsNotify { get; set; }
             public string UserSmsNotifyTplId { get; set; }

@@ -265,11 +265,12 @@ namespace SSCMS.Form.Core
                         list.Append(listHtml.Replace("{{key}}", kv.Key).Replace("{{value}}", kv.Value));
                     }
 
+                    var subject = !string.IsNullOrEmpty(formInfo.AdministratorMailTitle) ? formInfo.AdministratorMailTitle : "[SSCMS] 通知邮件";
                     var htmlBody = templateHtml
                         .Replace("{{title}}", formInfo.Title)
                         .Replace("{{list}}", list.ToString());
 
-                    await _mailManager.SendAsync(formInfo.AdministratorMailNotifyAddress, "[SSCMS] 通知邮件",
+                    await _mailManager.SendAsync(formInfo.AdministratorMailNotifyAddress, subject,
                         htmlBody);
                 }
             }

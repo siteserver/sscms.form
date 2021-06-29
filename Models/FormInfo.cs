@@ -54,6 +54,8 @@ namespace SSCMS.Form.Models
         //向管理员发送邮件通知
         public bool IsAdministratorMailNotify { get; set; }
 
+        public string AdministratorMailTitle { get; set; }
+
         public string AdministratorMailNotifyAddress { get; set; }
 
         //向用户发送短信通知

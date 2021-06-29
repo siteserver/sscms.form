@@ -30,6 +30,7 @@ namespace SSCMS.Form.Controllers.Admin
             formInfo.AdministratorSmsNotifyKeys = request.AdministratorSmsNotifyKeys;
             formInfo.AdministratorSmsNotifyMobile = request.AdministratorSmsNotifyMobile;
             formInfo.IsAdministratorMailNotify = request.IsAdministratorMailNotify;
+            formInfo.AdministratorMailTitle = request.AdministratorMailTitle;
             formInfo.AdministratorMailNotifyAddress = request.AdministratorMailNotifyAddress;
             formInfo.IsUserSmsNotify = request.IsUserSmsNotify;
             formInfo.UserSmsNotifyTplId = request.UserSmsNotifyTplId;
