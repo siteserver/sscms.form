@@ -14,6 +14,7 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class TemplatesController : ControllerBase
     {
         private const string Route = "form/templates";
+        private const string RouteDelete = "form/templates/actions/delete";
 
         private readonly IAuthManager _authManager;
         private readonly IFormManager _formManager;

@@ -15,9 +15,10 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class DataController : ControllerBase
     {
         private const string Route = "form/data";
-        private const string ActionsExport = "form/data/actions/export";
-        private const string ActionsColumns = "form/data/actions/columns";
+        private const string RouteExport = "form/data/actions/export";
+        private const string RouteColumns = "form/data/actions/columns";
         private const string RouteImport = "form/data/actions/import";
+        private const string RouteDelete = "form/data/actions/delete";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;

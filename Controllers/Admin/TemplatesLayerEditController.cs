@@ -13,6 +13,7 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class TemplatesLayerEditController : ControllerBase
     {
         private const string Route = "form/templatesLayerEdit";
+        private const string RouteUpdate = "form/templatesLayerEdit/actions/update";
 
         private readonly IAuthManager _authManager;
         private readonly IFormManager _formManager;
@@ -42,7 +43,7 @@ namespace SSCMS.Form.Controllers.Admin
             public string TemplateHtml { get; set; }
         }
 
-        public class EditRequest : SiteRequest
+        public class UpdateRequest : SiteRequest
         {
             public string Type { get; set; }
             public string OriginalName { get; set; }

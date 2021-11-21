@@ -1,4 +1,5 @@
 var $url = '/form/templates';
+var $urlDelete = $url + '/actions/delete';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -68,12 +69,10 @@ var methods = {
       text: '此操作将删除模板' + template.name + '，确认吗？',
       callback: function () {
         utils.loading(true);
-        $api.delete($url, {
-          data: {
-            siteId: $this.siteId,
-            type: $this.type,
-            name: template.name
-          }
+        $api.post($urlDelete, {
+          siteId: $this.siteId,
+          type: $this.type,
+          name: template.name
         }).then(function (response) {
           var res = response.data;
 

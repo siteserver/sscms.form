@@ -16,7 +16,9 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class DataAddController : ControllerBase
     {
         private const string Route = "form/dataAdd";
-        private const string RouteActionsUpload = "form/{siteId}/dataAdd/actions/upload";
+        private const string RouteUpload = "form/{siteId}/dataAdd/actions/upload";
+        
+        private const string RouteDeleteFile = "form/{siteId}/dataAdd/actions/deleteFile";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;

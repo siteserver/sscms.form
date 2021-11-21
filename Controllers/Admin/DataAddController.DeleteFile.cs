@@ -8,7 +8,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class DataAddController
     {
-        [HttpDelete, Route(RouteActionsUpload)]
+        [HttpPost, Route(RouteDeleteFile)]
         public async Task<ActionResult<BoolResult>> DeleteFile([FromBody] DeleteRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))

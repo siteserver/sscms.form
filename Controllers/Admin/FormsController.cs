@@ -14,10 +14,11 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class FormsController : ControllerBase
     {
         private const string Route = "form/forms";
-        private const string RouteActionsUp = "form/forms/actions/up";
-        private const string RouteActionsDown = "form/forms/actions/down";
+        private const string RouteUp = "form/forms/actions/up";
+        private const string RouteDown = "form/forms/actions/down";
         private const string RouteExport = "form/forms/actions/export";
         private const string RouteImport = "form/forms/actions/import";
+        private const string RouteDelete = "form/forms/actions/delete";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;

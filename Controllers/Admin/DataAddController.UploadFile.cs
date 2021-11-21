@@ -6,7 +6,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class DataAddController
     {
-        [HttpPost, Route(RouteActionsUpload)]
+        [HttpPost, Route(RouteUpload)]
         public async Task<ActionResult<UploadResult>> UploadFile([FromBody] UploadRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))

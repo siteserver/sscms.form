@@ -1,12 +1,13 @@
 ﻿var $url = '/form/styles';
-var $urlImport = '/form/styles/actions/import';
-var $urlExport = '/form/styles/actions/export';
+var $urlImport = $url + '/actions/import';
+var $urlExport = $url + '/actions/export';
+var $urlDelete = $url + '/actions/delete';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
   formId: utils.getQueryInt('formId'),
   navType: 'styles',
-  
+
   inputTypes: null,
   tableName: null,
   relatedIdentities: null,
@@ -59,7 +60,7 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.delete($url, {
+    $api.post($urlDelete, {
       data: {
         siteId: this.siteId,
         formId: this.formId,
@@ -187,7 +188,7 @@ var methods = {
 
   btnExportClick: function() {
     var $this = this;
-    
+
     utils.loading(this, true);
     $api.post($urlExport, {
       siteId: this.siteId,

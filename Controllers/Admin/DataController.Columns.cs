@@ -8,7 +8,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class DataController
     {
-        [HttpPost, Route(ActionsColumns)]
+        [HttpPost, Route(RouteColumns)]
         public async Task<ActionResult<BoolResult>> Columns([FromBody] ColumnsRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))

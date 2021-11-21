@@ -6,7 +6,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class FormsController
     {
-        [HttpPost, Route(RouteActionsDown)]
+        [HttpPost, Route(RouteDown)]
         public async Task<ActionResult<TaxisResult>> Down([FromBody] TaxisRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))

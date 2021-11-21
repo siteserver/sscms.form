@@ -1,4 +1,5 @@
 var $url = '/form/dataAdd';
+var $urlDeleteFile = $url + '/actions/deleteFile';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -60,7 +61,7 @@ var methods = {
       utils.success('数据保存成功！');
       $this.navType = 'data';
       $this.btnNavClick();
-      
+
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

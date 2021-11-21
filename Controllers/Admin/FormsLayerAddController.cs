@@ -13,6 +13,7 @@ namespace SSCMS.Form.Controllers.Admin
     public partial class FormsLayerAddController : ControllerBase
     {
         private const string Route = "form/formsLayerAdd";
+        private const string RouteUpdate = "form/formsLayerAdd/actions/update";
 
         private readonly IAuthManager _authManager;
         private readonly IFormManager _formManager;
@@ -41,7 +42,7 @@ namespace SSCMS.Form.Controllers.Admin
             public string Description { get; set; }
         }
 
-        public class EditRequest : SiteRequest
+        public class UpdateRequest : SiteRequest
         {
             public int FormId { get; set; }
             public string Title { get; set; }

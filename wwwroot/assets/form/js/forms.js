@@ -1,8 +1,9 @@
 ﻿var $url = '/form/forms';
-var $urlActionsUp = '/form/forms/actions/up';
-var $urlActionsDown = '/form/forms/actions/down';
-var $urlExport = '/form/forms/actions/export';
-var $urlImport = '/form/forms/actions/import';
+var $urlActionsUp = $url + '/actions/up';
+var $urlActionsDown = $url + '/actions/down';
+var $urlExport = $url + '/actions/export';
+var $urlImport = $url + '/actions/import';
+var $urlDelete = $url + '/actions/delete';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -37,11 +38,9 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.delete($url, {
-      data: {
-        siteId: this.siteId,
-        formId: formId
-      }
+    $api.post($urlDelete, {
+      siteId: this.siteId,
+      formId: formId
     }).then(function (response) {
       var res = response.data;
 

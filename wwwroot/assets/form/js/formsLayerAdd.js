@@ -1,4 +1,5 @@
 ﻿var $url = '/form/formsLayerAdd';
+var $urlUpdate = $url + '/actions/update';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
@@ -54,7 +55,7 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.put($url, {
+    $api.post($urlUpdate, {
       siteId: this.siteId,
       formId: this.formInfo.id,
       title: this.formInfo.title,
@@ -73,7 +74,7 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
-    
+
     this.$refs.form.validate(function(valid) {
       if (valid) {
         if ($this.formInfo.id) {

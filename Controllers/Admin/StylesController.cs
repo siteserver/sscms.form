@@ -17,6 +17,7 @@ namespace SSCMS.Form.Controllers.Admin
         private const string Route = "form/styles";
         private const string RouteImport = "form/styles/actions/import";
         private const string RouteExport = "form/styles/actions/export";
+        private const string RouteDelete = "form/styles/actions/delete";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;

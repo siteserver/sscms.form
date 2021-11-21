@@ -9,7 +9,7 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class DataController
     {
-        [HttpPost, Route(ActionsExport)]
+        [HttpPost, Route(RouteExport)]
         public async Task<ActionResult<StringResult>> Export([FromBody] FormRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))

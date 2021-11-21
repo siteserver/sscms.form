@@ -1,12 +1,13 @@
 ﻿var $url = '/form/data';
-var $urlExport = '/form/data/actions/export';
-var $urlColumns = '/form/data/actions/columns';
+var $urlExport = $url + '/actions/export';
+var $urlColumns = $url + '/actions/columns';
+var $urlDelete = $url + '/actions/delete';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
   formId: utils.getQueryInt('formId'),
   navType: 'data',
-  styleList: null,
+  styles: null,
   allAttributeNames: [],
   listAttributeNames: [],
   isReply: false,
@@ -34,7 +35,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
-      $this.styleList = res.styleList;
+      $this.styles = res.styles;
       $this.allAttributeNames = res.allAttributeNames;
       $this.listAttributeNames = res.listAttributeNames;
       $this.isReply = res.isReply;
@@ -54,12 +55,10 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.delete($url, {
-      data: {
-        siteId: this.siteId,
-        formId: this.formId,
-        dataId: dataId
-      }
+    $api.post($urlDelete, {
+      siteId: this.siteId,
+      formId: this.formId,
+      dataId: dataId
     }).then(function (response) {
       var res = response.data;
 
@@ -188,8 +187,8 @@ var methods = {
   },
 
   getAttributeType: function(attributeName) {
-    var style = _.find(this.styleList, function(o) {return o.title === attributeName});
-    if (style && style.fieldType) return style.fieldType;
+    var style = _.find(this.styles, function(o) {return o.attributeName === attributeName});
+    if (style && style.inputType) return style.inputType;
     return 'Text';
   },
 

@@ -7,8 +7,8 @@ namespace SSCMS.Form.Controllers.Admin
 {
     public partial class FormsLayerAddController
     {
-        [HttpPut, Route(Route)]
-        public async Task<ActionResult<BoolResult>> Edit([FromBody] EditRequest request)
+        [HttpPost, Route(RouteUpdate)]
+        public async Task<ActionResult<BoolResult>> Update([FromBody] UpdateRequest request)
         {
             if (!await _authManager.HasSitePermissionsAsync(request.SiteId, FormManager.PermissionsForms))
                 return Unauthorized();
