@@ -291,7 +291,7 @@
     </template>
     <template v-else-if="pageType === 'success'">
       <el-alert
-        style="margin-top: 20px"
+        style="margin-top: 100px; margin-bottom: 100px;"
         title="表单提交成功！"
         :closable="false"
         type="success"
@@ -300,7 +300,7 @@
       </el-alert>
     </template>
     <template v-else>
-      <el-row style="margin-top: 100px; text-align: center">
+      <el-row style="margin-top: 100px; margin-bottom: 100px; text-align: center">
         <img src="/assets/form/images/loading.gif" />
         <p>载入中，请稍后...</p>
       </el-row>

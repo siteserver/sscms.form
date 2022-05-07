@@ -61,11 +61,9 @@ var methods = {
 
     utils.loading(true);
     $api.post($urlDelete, {
-      data: {
-        siteId: this.siteId,
-        formId: this.formId,
-        attributeName: attributeName
-      }
+      siteId: this.siteId,
+      formId: this.formId,
+      attributeName: attributeName
     }).then(function (response) {
       var res = response.data;
 
