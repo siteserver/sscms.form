@@ -9,6 +9,19 @@
   <script type="text/javascript" src="/assets/form/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
   <link href="/sitefiles/assets/lib/elementui/default/index.css" rel="stylesheet" type="text/css" />
   <link href="/sitefiles/assets/css/element-ui.css" rel="stylesheet" type="text/css" />
+  <style>
+    #main, .el-alert {
+      min-height: 200px;
+    }
+    .el-alert__icon {
+        font-size: 22px;
+        width: 22px;
+    }
+    .el-alert__title {
+      font-size: 20px;
+      line-height: 50px;
+    }
+  </style>
 </head>
 
 <body>
@@ -291,7 +304,6 @@
     </template>
     <template v-else-if="pageType === 'success'">
       <el-alert
-        style="margin-top: 100px; margin-bottom: 100px;"
         title="表单提交成功！"
         :closable="false"
         type="success"

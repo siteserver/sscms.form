@@ -107,7 +107,7 @@ namespace SSCMS.Form.Core
                 .Where(Attr.FormId, formInfo.Id)
                 .OrderBy(nameof(DataInfo.IsReplied))
                 .OrderByDesc(Attr.Id)
-                .ForPage(page, pageSize);
+                ;
 
             if (isRepliedOnly)
             {
@@ -123,7 +123,7 @@ namespace SSCMS.Form.Core
             }
 
             var count = await _repository.CountAsync(q);
-            var list = await _repository.GetAllAsync(q);
+            var list = await _repository.GetAllAsync(q.ForPage(page, pageSize));
 
             return (count, list);
         }

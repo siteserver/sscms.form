@@ -15,25 +15,11 @@ namespace SSCMS.Form.Controllers.Admin
             var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
 
-            //var page = request.Page;
-
-            var dataInfo = await _dataRepository.GetDataInfoAsync(request.DataId);
-            if (dataInfo == null) return NotFound();
-
-            await _dataRepository.DeleteAsync(formInfo, dataInfo);
-
-            //var pageSize = _formManager.GetPageSize(formInfo);
-
-            //var (total, dataInfoList) = await _dataRepository.GetDataAsync(formInfo, false, null, page, pageSize);
-            //var pages = Convert.ToInt32(Math.Ceiling((double)total / pageSize));
-            //if (pages == 0) pages = 1;
-            //if (page > pages) page = pages;
-
-            //var logs = new List<IDictionary<string, object>>();
-            //foreach (var info in dataInfoList)
-            //{
-            //    logs.Add(info.ToDictionary());
-            //}
+            foreach (var dataId in request.DataIds)
+            {
+              var dataInfo = await _dataRepository.GetDataInfoAsync(dataId);
+              await _dataRepository.DeleteAsync(formInfo, dataInfo);
+            }
 
             var pageSize = _formManager.GetPageSize(formInfo);
 

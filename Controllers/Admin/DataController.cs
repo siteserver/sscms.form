@@ -55,7 +55,7 @@ namespace SSCMS.Form.Controllers.Admin
         public class DeleteRequest : FormRequest
         {
             public int Page { get; set; }
-            public int DataId { get; set; }
+            public List<int> DataIds { get; set; }
         }
 
         public class DeleteResult

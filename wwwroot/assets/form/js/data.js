@@ -18,7 +18,8 @@ var data = utils.init({
   columns: null,
   uploadPanel: false,
   uploadLoading: false,
-  uploadList: []
+  uploadList: [],
+  multipleSelection: [],
 });
 
 var methods = {
@@ -51,14 +52,14 @@ var methods = {
     });
   },
 
-  apiDelete: function (dataId) {
+  apiDelete: function (dataIds) {
     var $this = this;
 
     utils.loading(true);
     $api.post($urlDelete, {
       siteId: this.siteId,
       formId: this.formId,
-      dataId: dataId
+      dataIds: dataIds
     }).then(function (response) {
       var res = response.data;
 
@@ -90,6 +91,10 @@ var methods = {
 
   handleCurrentChange: function(val) {
     this.apiGet(val);
+  },
+
+  handleSelectionChange: function(val) {
+    this.multipleSelection = val;
   },
 
   handleColumnsChange: function() {
@@ -126,7 +131,19 @@ var methods = {
       title: '删除数据',
       text: '此操作将删除数据，确定吗？',
       callback: function () {
-        $this.apiDelete(dataId);
+        $this.apiDelete([dataId]);
+      }
+    });
+  },
+
+  btnDeleteSelectedClick: function () {
+    var $this = this;
+
+    utils.alertDelete({
+      title: '删除所选数据',
+      text: '此操作将删除所选数据，确定吗？',
+      callback: function () {
+        $this.apiDelete($this.dataIds);
       }
     });
   },
@@ -221,8 +238,22 @@ var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
+  computed: {
+    isChecked: function() {
+      return this.multipleSelection.length > 0;
+    },
+
+    dataIds: function() {
+      var retVal = [];
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        var item = this.multipleSelection[i];
+        retVal.push(item.id);
+      }
+      return retVal;
+    },
+  },
   created: function () {
     this.urlUpload = $apiUrl + '/form/data/actions/import?siteId=' + this.siteId + '&formId=' + this.formId;
     this.apiGet(1);
-  }
+  },
 });

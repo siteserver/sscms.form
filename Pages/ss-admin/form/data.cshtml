@@ -30,6 +30,10 @@
           <el-button size="mini" plain type="primary" icon="el-icon-download" style="margin-left: 0;" v-on:click="btnExportClick">
             导 出
           </el-button>
+          <el-button size="mini" plain type="primary" icon="el-icon-delete" style="margin-left: 0;" :disabled="!isChecked" 
+            v-on:click="btnDeleteSelectedClick">
+            删除
+          </el-button>
           <el-popover
             id="sortColumns"
             placement="top"
@@ -65,7 +69,8 @@
       
       <el-divider></el-divider>
       
-      <el-table :data="items" stripe style="width: 100%">
+      <el-table :data="items" stripe style="width: 100%" v-on:selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="45" align="center"></el-table-column>
         <el-table-column
           v-for="attributeName in allAttributeNames" 
           :key="attributeName" 

@@ -34,18 +34,29 @@ namespace SSCMS.Form.Core
 
             var filePaths = Directory.GetFiles(directoryPath);
 
+            var formInfo = new FormInfo();
+
             foreach (var filePath in filePaths)
             {
                 if (!StringUtils.EndsWithIgnoreCase(filePath, ".xml")) continue;
 
                 var feed = AtomFeed.Load(new FileStream(filePath, FileMode.Open));
 
-                var formInfo = new FormInfo();
-
                 foreach (var tableColumn in _formRepository.TableColumns)
                 {
                     var value = GetValue(feed.AdditionalElements, tableColumn);
-                    formInfo.Set(tableColumn.AttributeName, value);
+                    if (tableColumn.AttributeName == "ExtendValues")
+                    {
+                        var extendValues = TranslateUtils.JsonDeserialize<Dictionary<string, string>>(value.ToString());
+                        foreach (var key in extendValues.Keys)
+                        {
+                            formInfo.Set(key, extendValues[key]);
+                        }
+                    }
+                    else
+                    {
+                        formInfo.Set(tableColumn.AttributeName, value);
+                    }
                 }
 
                 formInfo.SiteId = siteId;
@@ -113,6 +124,20 @@ namespace SSCMS.Form.Core
                     }
 
                     await _dataRepository.InsertAsync(formInfo, dataInfo);
+                }
+            }
+
+            if (formInfo.Id > 0)
+            {
+                var relatedIdentities = GetRelatedIdentities(formInfo.Id);
+                var stylesFilePath = PathUtils.Combine(directoryPath, "tableStyle.zip");
+                if (FileUtils.IsFileExists(stylesFilePath))
+                {
+                    await _pathManager.ImportStylesByZipFileAsync(FormUtils.TableNameData, relatedIdentities, stylesFilePath);
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "FormId");
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "IsReplied");
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "ReplyContent");
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "ReplyDate");
                 }
             }
         }
@@ -199,13 +224,6 @@ namespace SSCMS.Form.Core
                 SetValue(feed.AdditionalElements, tableColumn, formInfo);
             }
 
-            //var styleDirectoryPath = PathUtils.Combine(directoryPath, formInfo.Id.ToString());
-
-            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
-
-            await _pathManager.ExportStylesAsync(siteId, FormUtils.TableNameData, relatedIdentities);
-            //await ExportFieldsAsync(formInfo.Id, styleDirectoryPath);
-
             var dataInfoList = await _dataRepository.GetAllDataInfoListAsync(formInfo);
             foreach (var dataInfo in dataInfoList)
             {
@@ -213,6 +231,11 @@ namespace SSCMS.Form.Core
                 feed.Entries.Add(entry);
             }
             feed.Save(filePath);
+
+            var relatedIdentities = GetRelatedIdentities(formInfo.Id);
+            var stylesFileName = await _pathManager.ExportStylesAsync(siteId, FormUtils.TableNameData, relatedIdentities);
+            var stylesFilePath = _pathManager.GetTemporaryFilesPath(stylesFileName);
+            FileUtils.CopyFile(stylesFilePath, PathUtils.Combine(directoryPath, stylesFileName));
 
             var plugin = _pluginManager.GetPlugin(PluginId);
 
