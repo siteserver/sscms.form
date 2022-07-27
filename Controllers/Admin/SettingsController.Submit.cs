@@ -19,12 +19,15 @@ namespace SSCMS.Form.Controllers.Admin
             formInfo.IsClosed = request.IsClosed;
             formInfo.Title = request.Title;
             formInfo.Description = request.Description;
+            formInfo.SuccessMessage = request.SuccessMessage;
+            formInfo.SuccessCallback = request.SuccessCallback;
             formInfo.IsReply = request.IsReply;
             formInfo.PageSize = request.PageSize;
             formInfo.IsTimeout = request.IsTimeout;
             formInfo.TimeToStart = request.TimeToStart;
             formInfo.TimeToEnd = request.TimeToEnd;
             formInfo.IsCaptcha = request.IsCaptcha;
+            formInfo.IsSms = request.IsSms;
             formInfo.IsAdministratorSmsNotify = request.IsAdministratorSmsNotify;
             formInfo.AdministratorSmsNotifyTplId = request.AdministratorSmsNotifyTplId;
             formInfo.AdministratorSmsNotifyKeys = request.AdministratorSmsNotifyKeys;

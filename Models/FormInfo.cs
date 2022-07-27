@@ -32,7 +32,13 @@ namespace SSCMS.Form.Models
 
         public string ListAttributeNames { get; set; }
 
+        public string SuccessMessage { get; set; }
+
+        public string SuccessCallback { get; set; }
+
         public bool IsCaptcha { get; set; }
+        
+        public bool IsSms { get; set; }
 
         public int PageSize { get; set; }
 

@@ -27,6 +27,14 @@
         <el-form-item label="表单简介">
           <el-input type="textarea" :rows="5" v-model="form.description"></el-input>
         </el-form-item>
+        <el-form-item label="提交成功后显示提示文字">
+          <el-input v-model="form.successMessage"></el-input>
+          <div class="tips">在此设置表单提交成功后显示的提示文字信息</div>
+        </el-form-item>
+        <el-form-item label="提交成功后调用Js函数名称">
+          <el-input v-model="form.successCallback"></el-input>
+          <div class="tips">在此设置表单提交成功后调用Js函数的函数名称</div>
+        </el-form-item>
         <el-form-item label="表单回复">
           <el-radio v-model="form.isReply" :label="true">启用表单回复功能</el-radio>
           <el-radio v-model="form.isReply" :label="false">禁用表单回复功能</el-radio>
@@ -54,14 +62,20 @@
             placeholder="请选择结束时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="验证码">
-          <el-radio v-model="form.isCaptcha" :label="true">提交时显示验证码</el-radio>
-          <el-radio v-model="form.isCaptcha" :label="false">不显示</el-radio>
+        <el-form-item label="图片验证码">
+          <el-radio v-model="form.isCaptcha" :label="true">启用</el-radio>
+          <el-radio v-model="form.isCaptcha" :label="false">不启用</el-radio>
+          <div class="tips">启用图片验证码后正确输入图片中包含的字符后才能提交表单</div>
+        </el-form-item>
+        <el-form-item label="短信验证码">
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isSms" :label="true">启用</el-radio>
+          <el-radio :disabled="!isSmsEnabled" v-model="form.isSms" :label="false">不启用</el-radio>
+          <div class="tips">启用短信验证码后短信验证通过后才能提交表单（需要短信插件支持）</div>
         </el-form-item>
         <el-form-item label="向管理员发送短信通知">
           <el-radio :disabled="!isSmsEnabled" v-model="form.isAdministratorSmsNotify" :label="true">发送短信通知</el-radio>
           <el-radio :disabled="!isSmsEnabled" v-model="form.isAdministratorSmsNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用短信发送后将自动为每一条新增提交发送短信给指定手机（需要插件支持）</div>
+          <div class="tips">启用短信发送后将自动为每一条新增提交发送短信给指定手机（需要短信插件支持）</div>
         </el-form-item>
         <template v-if="form.isAdministratorSmsNotify">
           <el-form-item  label="发送通知短信模板Id" prop="administratorSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">
@@ -81,7 +95,7 @@
         <el-form-item label="向管理员发送邮件通知">
           <el-radio :disabled="!isMailEnabled" v-model="form.isAdministratorMailNotify" :label="true">发送邮件通知</el-radio>
           <el-radio :disabled="!isMailEnabled" v-model="form.isAdministratorMailNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱（需要插件支持）</div>
+          <div class="tips">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱（需要短信插件支持）</div>
         </el-form-item>
         <template v-if="form.isAdministratorMailNotify">
           <el-form-item label="通知邮件标题" prop="administratorMailTitle">
@@ -96,7 +110,7 @@
         <el-form-item label="向用户发送短信通知">
           <el-radio :disabled="!isSmsEnabled" v-model="form.isUserSmsNotify" :label="true">发送短信通知</el-radio>
           <el-radio :disabled="!isSmsEnabled" v-model="form.isUserSmsNotify" :label="false">不发送</el-radio>
-          <div class="tips">启用短信发送后将自动向信息提交人发送提交成功短信（需要插件支持）</div>
+          <div class="tips">启用短信发送后将自动向信息提交人发送提交成功短信（需要短信插件支持）</div>
         </el-form-item>
         <template v-if="form.isUserSmsNotify">
           <el-form-item label="发送通知短信模板Id" prop="userSmsNotifyTplId" :rules="{ required: true, message: '请输入发送通知短信模板Id' }">

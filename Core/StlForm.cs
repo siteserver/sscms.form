@@ -32,7 +32,7 @@ namespace SSCMS.Form.Core
         public async Task<string> ParseAsync(IParseStlContext context)
         {
             var formName = string.Empty;
-            var type = string.Empty;
+            var type = "submit1";
 
             foreach (var name in context.StlAttributes.AllKeys)
             {

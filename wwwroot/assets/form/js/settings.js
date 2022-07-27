@@ -27,6 +27,16 @@ var methods = {
       var res = response.data;
 
       $this.form = _.assign({formId: $this.formId}, res.form);
+      if (!$this.form.timeToStart || $this.form.timeToStart == '0001-01-01 00:00:00') {
+        $this.form.timeToStart = new Date();
+      } else {
+        $this.form.timeToStart = new Date($this.form.timeToStart);
+      }
+      if (!$this.form.timeToEnd || $this.form.timeToEnd == '0001-01-01 00:00:00') {
+        $this.form.timeToEnd = new Date();
+      } else {
+        $this.form.timeToEnd = new Date($this.form.timeToEnd);
+      }
       if ($this.form.pageSize === 0) {
         $this.form.pageSize = 30;
       }

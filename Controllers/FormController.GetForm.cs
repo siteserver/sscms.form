@@ -31,12 +31,16 @@ namespace SSCMS.Form.Controllers
             //_cacheManager.AddOrUpdate(cacheKey, cacheList);
 
             var dataInfo = await _formManager.GetDataInfoAsync(0, formInfo.Id, styles);
+            var isSmsEnabled = await _smsManager.IsEnabledAsync();
 
             return new GetFormResult
             {
                 Styles = styles,
                 Title = formInfo.Title,
                 Description = formInfo.Description,
+                SuccessMessage = !string.IsNullOrEmpty(formInfo.SuccessMessage) ? formInfo.SuccessMessage : "表单提交成功！",
+                SuccessCallback = formInfo.SuccessCallback,
+                IsSms = isSmsEnabled && formInfo.IsSms,
                 IsCaptcha = formInfo.IsCaptcha,
                 DataInfo = dataInfo
             };

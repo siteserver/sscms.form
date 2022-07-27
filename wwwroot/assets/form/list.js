@@ -33,11 +33,14 @@ var methods = {
 
     this.pageType = 'loading';
     $api.get($url + '/' + this.siteId + '/' + this.formId, {
-      page: page,
-      word: this.word
+      params: {
+        page: page,
+        word: this.word
+      }
     }).then(function (response) {
       var res = response.data;
 
+      $this.page = page;
       $this.styleList = res.styleList;
       $this.allAttributeNames = res.allAttributeNames;
       $this.listAttributeNames = res.listAttributeNames;

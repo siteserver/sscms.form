@@ -48,9 +48,12 @@ namespace SSCMS.Form.Controllers.Admin
             public bool IsClosed { get; set; }
             public string Title { get; set; }
             public string Description { get; set; }
+            public string SuccessMessage { get; set; }
+            public string SuccessCallback { get; set; }
             public bool IsReply { get; set; }
             public string ListAttributeNames { get; set; }
             public bool IsCaptcha { get; set; }
+            public bool IsSms { get; set; }
             public int PageSize { get; set; }
             public bool IsTimeout { get; set; }
             public DateTime TimeToStart { get; set; }

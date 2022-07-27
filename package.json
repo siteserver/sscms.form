@@ -2,7 +2,7 @@
   "name": "form",
   "displayName": "自定义表单插件",
   "description": "SSCMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "license": "AGPL-3.0",
   "publisher": "sscms",
   "engines": {

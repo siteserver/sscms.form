@@ -23,6 +23,17 @@ namespace SSCMS.Form.Controllers
                 return this.Error("对不起，表单只允许在规定的时间内提交");
             }
 
+            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            if (isSmsEnabled && formInfo.IsSms)
+            {
+                var codeCacheKey = GetSmsCodeCacheKey(formId, request.Get<string>("SmsMobile"));
+                var code = _cacheManager.Get<int>(codeCacheKey);
+                if (code == 0 || TranslateUtils.ToInt(request.Get<string>("SmsCode")) != code)
+                {
+                    return this.Error("输入的验证码有误或验证码已超时");
+                }
+            }
+
             var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
             request.FormId = formId;

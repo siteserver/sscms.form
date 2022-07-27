@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SSCMS.Configuration;
 using SSCMS.Form.Core;
 using SSCMS.Utils;
 
@@ -26,6 +27,18 @@ namespace SSCMS.Form.Controllers.Admin
             var items = dataInfoList;
 
             var columns = _formManager.GetColumns(listAttributeNames, styles, formInfo.IsReply);
+
+            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            if (isSmsEnabled && formInfo.IsSms)
+            {
+                allAttributeNames.Add("SmsMobile");
+                columns.Add(new ContentColumn
+                {
+                    AttributeName = "SmsMobile",
+                    DisplayName = "短信验证手机号码",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, "SmsMobile")
+                });
+            }
 
             return new GetResult
             {

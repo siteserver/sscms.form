@@ -22,14 +22,16 @@ namespace SSCMS.Form.Controllers.Admin
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
+        private readonly ISmsManager _smsManager;
         private readonly IFormManager _formManager;
         private readonly IFormRepository _formRepository;
         private readonly IDataRepository _dataRepository;
 
-        public DataController(IAuthManager authManager, IPathManager pathManager, IFormManager formManager, IFormRepository formRepository, IDataRepository dataRepository)
+        public DataController(IAuthManager authManager, IPathManager pathManager, ISmsManager smsManager, IFormManager formManager, IFormRepository formRepository, IDataRepository dataRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
+            _smsManager = smsManager;
             _formManager = formManager;
             _formRepository = formRepository;
             _dataRepository = dataRepository;

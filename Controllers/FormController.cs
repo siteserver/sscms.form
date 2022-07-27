@@ -12,13 +12,15 @@ namespace SSCMS.Form.Controllers
     public partial class FormController : ControllerBase
     {
         private readonly ICacheManager _cacheManager;
+        private readonly ISmsManager _smsManager;
         private readonly IFormManager _formManager;
         private readonly IFormRepository _formRepository;
         private readonly IDataRepository _dataRepository;
 
-        public FormController(ICacheManager cacheManager, IFormManager formManager, IFormRepository formRepository, IDataRepository dataRepository)
+        public FormController(ICacheManager cacheManager, ISmsManager smsManager, IFormManager formManager, IFormRepository formRepository, IDataRepository dataRepository)
         {
             _cacheManager = cacheManager;
+            _smsManager = smsManager;
             _formManager = formManager;
             _formRepository = formRepository;
             _dataRepository = dataRepository;
@@ -29,6 +31,9 @@ namespace SSCMS.Form.Controllers
             public List<TableStyle> Styles { get; set; }
             public string Title { get; set; }
             public string Description { get; set; }
+            public string SuccessMessage { get; set; }
+            public string SuccessCallback { get; set; }
+            public bool IsSms { get; set; }
             public bool IsCaptcha { get; set; }
             public DataInfo DataInfo { get; set; }
         }
@@ -51,9 +56,19 @@ namespace SSCMS.Form.Controllers
             public List<ContentColumn> Columns { get; set; }
         }
 
+        public class SendSmsRequest
+        {
+            public string Mobile { get; set; }
+        }
+
         private static string GetUploadTokenCacheKey(int formId)
         {
             return $"SSCMS.Form.Controllers.Actions.Upload.{formId}";
+        }
+
+        private string GetSmsCodeCacheKey(int formId, string mobile)
+        {
+            return $"SSCMS.Form.Controllers.Actions.SendSms.{formId}.{mobile}";
         }
     }
 }

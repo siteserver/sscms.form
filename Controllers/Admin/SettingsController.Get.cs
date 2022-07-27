@@ -29,6 +29,11 @@ namespace SSCMS.Form.Controllers.Admin
             var isSmsEnabled = await _smsManager.IsEnabledAsync();
             var isMailEnabled = await _mailManager.IsEnabledAsync();
 
+            if (string.IsNullOrEmpty(formInfo.SuccessMessage))
+            {
+                formInfo.SuccessMessage = "表单提交成功！";
+            }
+
             return new GetResult
             {
                 Form = formInfo,
