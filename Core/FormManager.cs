@@ -201,7 +201,7 @@ namespace SSCMS.Form.Core
                 !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyTplId) &&
                 !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyMobile))
             {
-                var isSmsEnabled = await _smsManager.IsEnabledAsync();
+                var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
                 if (isSmsEnabled)
                 {
                     var parameters = new Dictionary<string, string>();
@@ -229,7 +229,7 @@ namespace SSCMS.Form.Core
                         }
                     }
 
-                    await _smsManager.SendAsync(formInfo.AdministratorSmsNotifyMobile,
+                    await _smsManager.SendSmsAsync(formInfo.AdministratorSmsNotifyMobile,
                         formInfo.AdministratorSmsNotifyTplId, parameters);
                 }
             }
@@ -237,7 +237,7 @@ namespace SSCMS.Form.Core
             if (formInfo.IsAdministratorMailNotify &&
                 !string.IsNullOrEmpty(formInfo.AdministratorMailNotifyAddress))
             {
-                var isMailEnabled = await _mailManager.IsEnabledAsync();
+                var isMailEnabled = await _mailManager.IsMailEnabledAsync();
                 if (isMailEnabled)
                 {
                     var templateHtml = await GetMailTemplateHtmlAsync();
@@ -270,7 +270,7 @@ namespace SSCMS.Form.Core
                         .Replace("{{title}}", formInfo.Title)
                         .Replace("{{list}}", list.ToString());
 
-                    await _mailManager.SendAsync(formInfo.AdministratorMailNotifyAddress, subject,
+                    await _mailManager.SendMailAsync(formInfo.AdministratorMailNotifyAddress, subject,
                         htmlBody);
                 }
             }
@@ -279,7 +279,7 @@ namespace SSCMS.Form.Core
                 !string.IsNullOrEmpty(formInfo.UserSmsNotifyTplId) &&
                 !string.IsNullOrEmpty(formInfo.UserSmsNotifyMobileName))
             {
-                var isSmsEnabled = await _smsManager.IsEnabledAsync();
+                var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
                 if (isSmsEnabled)
                 {
                     var parameters = new Dictionary<string, string>();
@@ -310,7 +310,7 @@ namespace SSCMS.Form.Core
                     var mobile = dataInfo.Get<string>(formInfo.UserSmsNotifyMobileName);
                     if (!string.IsNullOrEmpty(mobile))
                     {
-                        await _smsManager.SendAsync(mobile, formInfo.UserSmsNotifyTplId, parameters);
+                        await _smsManager.SendSmsAsync(mobile, formInfo.UserSmsNotifyTplId, parameters);
                     }
                 }
             }

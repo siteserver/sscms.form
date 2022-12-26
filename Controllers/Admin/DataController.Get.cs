@@ -28,7 +28,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             var columns = _formManager.GetColumns(listAttributeNames, styles, formInfo.IsReply);
 
-            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
             if (isSmsEnabled && formInfo.IsSms)
             {
                 allAttributeNames.Add("SmsMobile");

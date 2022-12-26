@@ -26,8 +26,8 @@ namespace SSCMS.Form.Controllers.Admin
             var administratorSmsNotifyKeys = ListUtils.GetStringList(formInfo.AdministratorSmsNotifyKeys);
             var userSmsNotifyKeys = ListUtils.GetStringList(formInfo.UserSmsNotifyKeys);
 
-            var isSmsEnabled = await _smsManager.IsEnabledAsync();
-            var isMailEnabled = await _mailManager.IsEnabledAsync();
+            var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
+            var isMailEnabled = await _mailManager.IsMailEnabledAsync();
 
             if (string.IsNullOrEmpty(formInfo.SuccessMessage))
             {

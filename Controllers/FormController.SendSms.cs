@@ -24,7 +24,7 @@ namespace SSCMS.Form.Controllers
                 return this.Error("对不起，表单只允许在规定的时间内提交");
             }
 
-            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
             if (!isSmsEnabled || !formInfo.IsSms)
             {
                 return this.Error("对不起，表单短信验证功能已被禁用");
@@ -32,7 +32,7 @@ namespace SSCMS.Form.Controllers
 
             var code = StringUtils.GetRandomInt(100000, 999999);
             var (success, errorMessage) =
-                await _smsManager.SendAsync(request.Mobile, SmsCodeType.Authentication, code);
+                await _smsManager.SendSmsAsync(request.Mobile, SmsCodeType.Authentication, code);
             if (!success)
             {
                 return this.Error(errorMessage);

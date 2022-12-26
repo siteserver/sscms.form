@@ -1,3 +1,6 @@
+## 1.2.0
+* 迁移至.NET 7
+
 ## 1.1.4
 * &lt;stl:form&gt; 标签可以省略type属性
 * &lt;stl:form&gt; 标签新增 height 属性

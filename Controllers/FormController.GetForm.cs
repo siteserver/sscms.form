@@ -31,7 +31,7 @@ namespace SSCMS.Form.Controllers
             //_cacheManager.AddOrUpdate(cacheKey, cacheList);
 
             var dataInfo = await _formManager.GetDataInfoAsync(0, formInfo.Id, styles);
-            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
 
             return new GetFormResult
             {

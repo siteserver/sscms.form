@@ -23,7 +23,7 @@ namespace SSCMS.Form.Controllers
                 return this.Error("对不起，表单只允许在规定的时间内提交");
             }
 
-            var isSmsEnabled = await _smsManager.IsEnabledAsync();
+            var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
             if (isSmsEnabled && formInfo.IsSms)
             {
                 var codeCacheKey = GetSmsCodeCacheKey(formId, request.Get<string>("SmsMobile"));
