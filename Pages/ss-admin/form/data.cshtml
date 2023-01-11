@@ -19,52 +19,67 @@
   <el-container>
     <el-main>
 
+      <el-row>
+        <el-form v-on:submit.native.prevent :inline="true" size="mini" label-width="100px">
+          <el-form-item label="">
+            <el-date-picker type="datetime" placeholder="选择开始日期" v-model="searchForm.startDate"
+                value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="">
+            <el-date-picker type="datetime" placeholder="选择结束日期" v-model="searchForm.endDate"
+                value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="">
+            <el-input v-model="searchForm.keyword" placeholder="搜索关键词"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" v-on:click="btnSearchClick">搜 索</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+
       <el-row id="commands">
-        <el-col :span="12">
-          <el-button size="mini" plain type="primary" icon="el-icon-circle-plus-outline" v-on:click="btnAddClick">
-            添 加
+        <el-button size="mini" plain type="primary" icon="el-icon-circle-plus-outline" v-on:click="btnAddClick">
+          添 加
+        </el-button>
+        <el-button size="mini" plain type="primary" icon="el-icon-upload" style="margin-left: 0;" v-on:click="btnImportClick">
+          导 入
+        </el-button>
+        <el-button size="mini" plain type="primary" icon="el-icon-download" style="margin-left: 0;" v-on:click="btnExportClick">
+          导 出
+        </el-button>
+        <el-button size="mini" plain type="primary" icon="el-icon-delete" style="margin-left: 0;" :disabled="!isChecked" 
+          v-on:click="btnDeleteSelectedClick">
+          删除
+        </el-button>
+        <el-popover
+          id="sortColumns"
+          placement="top"
+          width="360"
+          trigger="click">
+          <div>
+            设置显示列
+          </div>
+          <el-table
+            :data="columns"
+            size="mini"
+            style="width: 100%; overflow: auto; max-height: 500px !important">
+            <el-table-column prop="displayName"></el-table-column>
+            <el-table-column prop="attributeName"></el-table-column>
+            <el-table-column align="right" width="80">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.isList"
+                  v-on:change="handleColumnsChange"
+                  size="mini">
+                </el-switch>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-button slot="reference" size="mini" plain type="primary" icon="el-icon-arrow-down el-icon--right">
+            显示列
           </el-button>
-          <el-button size="mini" plain type="primary" icon="el-icon-upload" style="margin-left: 0;" v-on:click="btnImportClick">
-            导 入
-          </el-button>
-          <el-button size="mini" plain type="primary" icon="el-icon-download" style="margin-left: 0;" v-on:click="btnExportClick">
-            导 出
-          </el-button>
-          <el-button size="mini" plain type="primary" icon="el-icon-delete" style="margin-left: 0;" :disabled="!isChecked" 
-            v-on:click="btnDeleteSelectedClick">
-            删除
-          </el-button>
-          <el-popover
-            id="sortColumns"
-            placement="top"
-            width="360"
-            trigger="click">
-            <div>
-              设置显示列
-            </div>
-            <el-table
-              :data="columns"
-              size="mini"
-              style="width: 100%; overflow: auto; max-height: 500px !important">
-              <el-table-column prop="displayName"></el-table-column>
-              <el-table-column prop="attributeName"></el-table-column>
-              <el-table-column align="right" width="80">
-                <template slot-scope="scope">
-                  <el-switch
-                    v-model="scope.row.isList"
-                    v-on:change="handleColumnsChange"
-                    size="mini">
-                  </el-switch>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-button slot="reference" size="mini" plain type="primary" icon="el-icon-arrow-down el-icon--right">
-              显示列
-            </el-button>
-          </el-popover>
-        </el-col>
-        <el-col :span="12" align="right">
-        </el-col>
+        </el-popover>
       </el-row>
       
       <el-divider></el-divider>
@@ -98,6 +113,8 @@
         </el-table-column>
         <el-table-column v-if="isReply && listAttributeNames.indexOf('ReplyDate') !== -1" prop="replyDate" label="回复时间"></el-table-column>
         <el-table-column v-if="isReply && listAttributeNames.indexOf('ReplyContent') !== -1" prop="replyContent" label="回复内容"></el-table-column>
+        <el-table-column v-if="listAttributeNames.indexOf('ChannelId') !== -1" prop="channelPage" label="所在栏目页"></el-table-column>
+        <el-table-column v-if="listAttributeNames.indexOf('ContentId') !== -1" prop="contentPage" label="所在内容页"></el-table-column>
         <el-table-column
           fixed="right"
           label="操作"

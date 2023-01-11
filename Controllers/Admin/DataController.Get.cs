@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
 using SSCMS.Form.Core;
+using SSCMS.Form.Models;
 using SSCMS.Utils;
 
 namespace SSCMS.Form.Controllers.Admin
@@ -23,8 +25,24 @@ namespace SSCMS.Form.Controllers.Admin
             var allAttributeNames = _formRepository.GetAllAttributeNames(styles);
             var pageSize = _formManager.GetPageSize(formInfo);
 
-            var (total, dataInfoList) = await _dataRepository.GetDataAsync(formInfo, false, null, request.Page, pageSize);
-            var items = dataInfoList;
+            var (total, dataInfoList) = await _dataRepository.GetListAsync(formInfo, false, request.StartDate, request.EndDate, request.Keyword, request.Page, pageSize);
+            var items = new List<DataInfo>();
+            foreach (var dataInfo in dataInfoList)
+            {
+                var item = dataInfo.Clone<DataInfo>();
+                if (dataInfo.ChannelId > 0 && listAttributeNames.Contains(nameof(DataInfo.ChannelId)))
+                {
+                    var channelName = _channelRepository.GetChannelNameNavigationAsync(dataInfo.SiteId, dataInfo.ChannelId);
+                    item.Set("channelPage", channelName);
+                }
+                if (dataInfo.ContentId > 0 && listAttributeNames.Contains(nameof(DataInfo.ContentId)))
+                {
+                    var content = await _contentRepository.GetAsync(dataInfo.SiteId, dataInfo.ChannelId, dataInfo.ContentId);
+                    var title = content != null ? content.Title : string.Empty;
+                    item.Set("contentPage", title);
+                }
+                items.Add(item);
+            }
 
             var columns = _formManager.GetColumns(listAttributeNames, styles, formInfo.IsReply);
 

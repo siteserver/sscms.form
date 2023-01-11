@@ -13,6 +13,8 @@ var $url = '/form';
 
 var data = utils.init({
   siteId: utils.getQueryInt('siteId') || $formConfigSiteId,
+  channelId: utils.getQueryInt('channelId') || $formConfigChannelId,
+  contentId: utils.getQueryInt('contentId') || $formConfigContentId,
   formId: utils.getQueryInt('formId') || $formConfigFormId,
   pageType: '',
   styles: [],

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSCMS.Configuration;
@@ -6,6 +7,7 @@ using SSCMS.Form.Abstractions;
 using SSCMS.Form.Core;
 using SSCMS.Form.Models;
 using SSCMS.Models;
+using SSCMS.Repositories;
 using SSCMS.Services;
 
 namespace SSCMS.Form.Controllers.Admin
@@ -24,15 +26,19 @@ namespace SSCMS.Form.Controllers.Admin
         private readonly IPathManager _pathManager;
         private readonly ISmsManager _smsManager;
         private readonly IFormManager _formManager;
+        private readonly IChannelRepository _channelRepository;
+        private readonly IContentRepository _contentRepository;
         private readonly IFormRepository _formRepository;
         private readonly IDataRepository _dataRepository;
 
-        public DataController(IAuthManager authManager, IPathManager pathManager, ISmsManager smsManager, IFormManager formManager, IFormRepository formRepository, IDataRepository dataRepository)
+        public DataController(IAuthManager authManager, IPathManager pathManager, ISmsManager smsManager, IFormManager formManager, IChannelRepository channelRepository, IContentRepository contentRepository, IFormRepository formRepository, IDataRepository dataRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
             _smsManager = smsManager;
             _formManager = formManager;
+            _channelRepository = channelRepository;
+            _contentRepository = contentRepository;
             _formRepository = formRepository;
             _dataRepository = dataRepository;
         }
@@ -40,6 +46,9 @@ namespace SSCMS.Form.Controllers.Admin
         public class GetRequest : FormRequest
         {
             public int Page { get; set; }
+            public string Keyword { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
         }
 
         public class GetResult
@@ -58,13 +67,6 @@ namespace SSCMS.Form.Controllers.Admin
         {
             public int Page { get; set; }
             public List<int> DataIds { get; set; }
-        }
-
-        public class DeleteResult
-        {
-            public List<DataInfo> Items { get; set; }
-            public int Total { get; set; }
-            public int PageSize { get; set; }
         }
 
         public class ColumnsRequest : FormRequest

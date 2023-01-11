@@ -9,7 +9,7 @@ namespace SSCMS.Form.Controllers
     public partial class FormController
     {
         [HttpPost, Route("{siteId:int}/{formId:int}")]
-        public async Task<ActionResult<DataInfo>> Submit([FromRoute] int siteId, [FromRoute] int formId, [FromBody] DataInfo request)
+        public async Task<ActionResult<DataInfo>> Submit([FromRoute] int siteId, [FromRoute] int channelId, [FromRoute] int contentId, [FromRoute] int formId, [FromBody] DataInfo request)
         {
             var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);
             if (formInfo == null) return NotFound();
@@ -36,6 +36,9 @@ namespace SSCMS.Form.Controllers
 
             var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
+            request.SiteId = siteId;
+            request.ChannelId = channelId;
+            request.ContentId = contentId;
             request.FormId = formId;
 
             request.Id = await _dataRepository.InsertAsync(formInfo, request);

@@ -9,6 +9,15 @@ namespace SSCMS.Form.Models
     public class DataInfo : Entity
     {
         [DataColumn]
+        public int SiteId { get; set; }
+
+        [DataColumn]
+        public int ChannelId { get; set; }
+
+        [DataColumn]
+        public int ContentId { get; set; }
+
+        [DataColumn]
         public int FormId { get; set; }
 
         [DataColumn]

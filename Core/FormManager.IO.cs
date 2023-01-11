@@ -134,6 +134,9 @@ namespace SSCMS.Form.Core
                 if (FileUtils.IsFileExists(stylesFilePath))
                 {
                     await _pathManager.ImportStylesByZipFileAsync(FormUtils.TableNameData, relatedIdentities, stylesFilePath);
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "SiteId");
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "ChannelId");
+                    await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "ContentId");
                     await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "FormId");
                     await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "IsReplied");
                     await _tableStyleRepository.DeleteAsync(FormUtils.TableNameData, formInfo.Id, "ReplyContent");
@@ -224,7 +227,7 @@ namespace SSCMS.Form.Core
                 SetValue(feed.AdditionalElements, tableColumn, formInfo);
             }
 
-            var dataInfoList = await _dataRepository.GetAllDataInfoListAsync(formInfo);
+            var dataInfoList = await _dataRepository.GetListAsync(formInfo);
             foreach (var dataInfo in dataInfoList)
             {
                 var entry = GetAtomEntry(dataInfo);

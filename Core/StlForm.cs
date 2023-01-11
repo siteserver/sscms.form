@@ -80,7 +80,7 @@ namespace SSCMS.Form.Core
             {
                 var elementId = $"iframe_{StringUtils.GetShortGuid(false)}";
                 var libUrl = _pathManager.GetApiHostUrl(site, "assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
-                var pageUrl = _pathManager.GetApiHostUrl(site, $"assets/form/templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
+                var pageUrl = _pathManager.GetApiHostUrl(site, $"assets/form/templates/{type}/index.html?siteId={context.SiteId}&channelId={context.ChannelId}&contentId={context.ContentId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
                 var heightStyle = !string.IsNullOrEmpty(height) ? $"height: {height}" : string.Empty;
                 var frameResize = string.Empty;
                 if (!string.IsNullOrEmpty(height))
@@ -105,6 +105,8 @@ namespace SSCMS.Form.Core
 <script>
 var $formConfigApiUrl = '{apiUrl}';
 var $formConfigSiteId = {context.SiteId};
+var $formConfigChannelId = {context.ChannelId};
+var $formConfigContentId = {context.ContentId};
 var $formConfigFormId = {formInfo.Id};
 </script>
 {context.StlInnerHtml}

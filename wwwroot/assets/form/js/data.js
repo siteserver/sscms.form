@@ -20,6 +20,11 @@ var data = utils.init({
   uploadLoading: false,
   uploadList: [],
   multipleSelection: [],
+  searchForm: {
+    keyword: '',
+    startDate: null,
+    endDate: null,
+  },
 });
 
 var methods = {
@@ -31,7 +36,10 @@ var methods = {
       params: {
         siteId: this.siteId,
         formId: this.formId,
-        page: page
+        page: page,
+        keyword: this.searchForm.keyword,
+        startDate: this.searchForm.startDate,
+        endDate: this.searchForm.endDate,
       }
     }).then(function (response) {
       var res = response.data;
@@ -63,9 +71,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
-      $this.items = res.items;
-      $this.total = res.total;
-      $this.pageSize = res.pageSize;
+      $this.apiGet(1);
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -231,7 +237,11 @@ var methods = {
       siteId: this.siteId,
       formId: this.formId
     });
-  }
+  },
+
+  btnSearchClick: function() {
+    this.apiGet(1);
+  },
 };
 
 var $vue = new Vue({

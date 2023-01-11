@@ -29,6 +29,9 @@ namespace SSCMS.Form.Core
 
         private static readonly Lazy<List<string>> MetadataAttributes = new Lazy<List<string>>(() => new List<string>
         {
+            nameof(DataInfo.SiteId),
+            nameof(DataInfo.ChannelId),
+            nameof(DataInfo.ContentId),
             nameof(DataInfo.FormId),
             nameof(DataInfo.IsReplied),
             nameof(DataInfo.ReplyDate),

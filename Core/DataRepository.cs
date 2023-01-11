@@ -94,7 +94,7 @@ namespace SSCMS.Form.Core
             return await _repository.CountAsync(Q.Where(Attr.FormId, formId));
         }
 
-        public async Task<(int Total, List<DataInfo>)> GetDataAsync(FormInfo formInfo, bool isRepliedOnly, string word, int page, int pageSize)
+        public async Task<(int Total, List<DataInfo>)> GetListAsync(FormInfo formInfo, bool isRepliedOnly, DateTime? startDate, DateTime? endDate, string word, int page, int pageSize)
         {
             if (formInfo.TotalCount == 0)
             {
@@ -114,6 +114,15 @@ namespace SSCMS.Form.Core
                 q.Where(nameof(DataInfo.IsReplied), true);
             }
 
+            if (startDate.HasValue)
+            {
+                q.Where(nameof(DataInfo.CreatedDate), ">=", startDate.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+            if (endDate.HasValue)
+            {
+                q.Where(nameof(DataInfo.CreatedDate), "<=", endDate.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+
             if (!string.IsNullOrEmpty(word))
             {
                 q.Where(query => query
@@ -128,7 +137,7 @@ namespace SSCMS.Form.Core
             return (count, list);
         }
 
-        public async Task<IList<DataInfo>> GetAllDataInfoListAsync(FormInfo formInfo)
+        public async Task<IList<DataInfo>> GetListAsync(FormInfo formInfo)
         {
             if (formInfo.TotalCount == 0)
             {

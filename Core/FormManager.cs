@@ -90,6 +90,18 @@ namespace SSCMS.Form.Core
                     AttributeName = nameof(DataInfo.LastModifiedDate),
                     DisplayName = "更新时间",
                     IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.LastModifiedDate))
+                },
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.ChannelId),
+                    DisplayName = "所在栏目页",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.ChannelId))
+                },
+                new ContentColumn
+                {
+                    AttributeName = nameof(DataInfo.ContentId),
+                    DisplayName = "所在内容页",
+                    IsList = ListUtils.ContainsIgnoreCase(listAttributeNames, nameof(DataInfo.ContentId))
                 }
             });
 

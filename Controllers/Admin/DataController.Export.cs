@@ -20,7 +20,7 @@ namespace SSCMS.Form.Controllers.Admin
 
             var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
 
-            var logs = await _dataRepository.GetAllDataInfoListAsync(formInfo);
+            var logs = await _dataRepository.GetListAsync(formInfo);
 
             var head = new List<string> { "编号" };
             foreach (var style in styles)

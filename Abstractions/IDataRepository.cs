@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Datory;
 using SSCMS.Form.Models;
@@ -23,12 +24,10 @@ namespace SSCMS.Form.Abstractions
 
         Task<int> GetCountAsync(int formId);
 
-        Task<(int Total, List<DataInfo>)> GetDataAsync(FormInfo formInfo, bool isRepliedOnly, string word, int page, int pageSize);
+        Task<(int Total, List<DataInfo>)> GetListAsync(FormInfo formInfo, bool isRepliedOnly, DateTime? startDate, DateTime? endDate, string word, int page, int pageSize);
 
-        Task<IList<DataInfo>> GetAllDataInfoListAsync(FormInfo formInfo);
+        Task<IList<DataInfo>> GetListAsync(FormInfo formInfo);
 
         string GetValue(TableStyle style, DataInfo dataInfo);
-
-        //Dictionary<string, object> GetDict(List<TableStyle> styles, DataInfo dataInfo);
     }
 }
