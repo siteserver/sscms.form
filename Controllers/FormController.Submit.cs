@@ -8,10 +8,10 @@ namespace SSCMS.Form.Controllers
 {
     public partial class FormController
     {
-        [HttpPost, Route("{siteId:int}/{formId:int}")]
-        public async Task<ActionResult<DataInfo>> Submit([FromRoute] int siteId, [FromRoute] int channelId, [FromRoute] int contentId, [FromRoute] int formId, [FromBody] DataInfo request)
+        [HttpPost, Route("")]
+        public async Task<ActionResult<DataInfo>> Submit([FromBody] DataInfo request)
         {
-            var formInfo = await _formRepository.GetFormInfoAsync(siteId, formId);
+            var formInfo = await _formRepository.GetFormInfoAsync(request.SiteId, request.FormId);
             if (formInfo == null) return NotFound();
             if (formInfo.IsClosed)
             {
@@ -26,7 +26,7 @@ namespace SSCMS.Form.Controllers
             var isSmsEnabled = await _smsManager.IsSmsEnabledAsync();
             if (isSmsEnabled && formInfo.IsSms)
             {
-                var codeCacheKey = GetSmsCodeCacheKey(formId, request.Get<string>("SmsMobile"));
+                var codeCacheKey = GetSmsCodeCacheKey(formInfo.Id, request.Get<string>("SmsMobile"));
                 var code = _cacheManager.Get<int>(codeCacheKey);
                 if (code == 0 || TranslateUtils.ToInt(request.Get<string>("SmsCode")) != code)
                 {
@@ -35,11 +35,6 @@ namespace SSCMS.Form.Controllers
             }
 
             var styles = await _formManager.GetTableStylesAsync(formInfo.Id);
-
-            request.SiteId = siteId;
-            request.ChannelId = channelId;
-            request.ContentId = contentId;
-            request.FormId = formId;
 
             request.Id = await _dataRepository.InsertAsync(formInfo, request);
             await _formManager.SendNotifyAsync(formInfo, styles, request);

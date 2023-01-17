@@ -52,11 +52,15 @@ var methods = {
         $this.apiCaptchaLoad();
       }
       $this.styles = res.styles;
-      $this.form = $this.getForm(res.styles, _.assign({
+      $this.form = $this.getForm(res.styles, _.assign({}, res.dataInfo, {
+        siteId: $this.siteId,
+        channelId: $this.channelId,
+        contentId: $this.contentId,
+        formId: $this.formId,
         captcha: '',
         smsMobile: '',
         smsCode: ''
-      }, res.dataInfo));
+      }));
       $this.pageType = 'form';
     }).catch(function (error) {
       utils.error(error);
@@ -124,7 +128,7 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.post($url + '/' + this.siteId + '/' + this.formId, _.assign({}, this.form)).then(function (response) {
+    $api.post($url, _.assign({}, this.form)).then(function (response) {
       var res = response.data;
 
       $this.pageType = 'success';

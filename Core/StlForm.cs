@@ -10,7 +10,7 @@ using SSCMS.Utils;
 
 namespace SSCMS.Form.Core
 {
-    public class StlForm : IPluginParseAsync
+    public partial class StlForm : IPluginParseAsync
     {
         private const string AttributeTitle = "title";
         private const string AttributeName = "name";
@@ -76,40 +76,32 @@ namespace SSCMS.Form.Core
             if (formInfo == null || site == null) return string.Empty;
 
             var apiUrl = _pathManager.GetApiHostUrl(site, Constants.ApiPrefix);
-            if (string.IsNullOrEmpty(context.StlInnerHtml))
+
+            if (!string.IsNullOrWhiteSpace(context.StlInnerHtml))
             {
-                var elementId = $"iframe_{StringUtils.GetShortGuid(false)}";
-                var libUrl = _pathManager.GetApiHostUrl(site, "assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
-                var pageUrl = _pathManager.GetApiHostUrl(site, $"assets/form/templates/{type}/index.html?siteId={context.SiteId}&channelId={context.ChannelId}&contentId={context.ContentId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
-                var heightStyle = !string.IsNullOrEmpty(height) ? $"height: {height}" : string.Empty;
-                var frameResize = string.Empty;
-                if (!string.IsNullOrEmpty(height))
-                {
-                    heightStyle = $"height: {StringUtils.AddUnitIfNotExists(height)}";
-                }
-                else
-                {
-                    frameResize = $@"
+                return ParseInnerHtml(context, site, formInfo, apiUrl);
+            }
+
+            var elementId = $"iframe_{StringUtils.GetShortGuid(false)}";
+            var libUrl = _pathManager.GetApiHostUrl(site, "assets/form/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
+            var pageUrl = _pathManager.GetApiHostUrl(site, $"assets/form/templates/{type}/index.html?siteId={context.SiteId}&channelId={context.ChannelId}&contentId={context.ContentId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(apiUrl)}");
+            var heightStyle = !string.IsNullOrEmpty(height) ? $"height: {height}" : string.Empty;
+            var frameResize = string.Empty;
+            if (!string.IsNullOrEmpty(height))
+            {
+                heightStyle = $"height: {StringUtils.AddUnitIfNotExists(height)}";
+            }
+            else
+            {
+                frameResize = $@"
 <script type=""text/javascript"" src=""{libUrl}""></script>
 <script type=""text/javascript"">iFrameResize({{log: false}}, '#{elementId}')</script>
-";
-                }
-
-                return $@"
-<iframe id=""{elementId}"" frameborder=""0"" scrolling=""no"" src=""{pageUrl}"" style=""width: 1px;min-width: 100%;{heightStyle}""></iframe>
-{frameResize}
 ";
             }
 
             return $@"
-<script>
-var $formConfigApiUrl = '{apiUrl}';
-var $formConfigSiteId = {context.SiteId};
-var $formConfigChannelId = {context.ChannelId};
-var $formConfigContentId = {context.ContentId};
-var $formConfigFormId = {formInfo.Id};
-</script>
-{context.StlInnerHtml}
+<iframe id=""{elementId}"" frameborder=""0"" scrolling=""no"" src=""{pageUrl}"" style=""width: 1px;min-width: 100%;{heightStyle}""></iframe>
+{frameResize}
 ";
         }
     }

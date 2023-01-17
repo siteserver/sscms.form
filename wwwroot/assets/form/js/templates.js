@@ -4,7 +4,7 @@ var $urlDelete = $url + '/actions/delete';
 var data = utils.init({
   siteId: utils.getQueryInt('siteId'),
   formId: utils.getQueryInt('formId'),
-  type: utils.getQueryString('type'),
+  type: utils.getQueryString('type') || 'submit',
   formInfoList: null,
   templateInfoList: null,
   name: null,
@@ -105,7 +105,6 @@ var methods = {
   },
 
   btnNavClick: function() {
-    console.log(this.type);
     utils.loading(true);
     location.href = utils.getRootUrl('form/templates', {
       siteId: this.siteId,
